@@ -12,7 +12,7 @@ interface ScannerViewProps {
 }
 
 export default function ScannerView({ onBack }: ScannerViewProps) {
-  const { videoRef, canvasRef, ready, error: cameraError, toggleCamera } = useCamera();
+  const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry } = useCamera();
   const { text: ocrText, workerReady, loadingMessage } = useOCR(canvasRef, videoRef, 1000);
   const { answer, explanation, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(8000);
 
@@ -59,6 +59,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
         canvasRef={canvasRef}
         ready={ready}
         error={cameraError}
+        retry={retry}
       />
 
       <AnswerOverlay

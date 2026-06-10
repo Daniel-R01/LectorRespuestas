@@ -5,9 +5,10 @@ interface CameraViewProps {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   ready: boolean;
   error: string | null;
+  retry: () => void;
 }
 
-export default function CameraView({ videoRef, canvasRef, ready, error }: CameraViewProps) {
+export default function CameraView({ videoRef, canvasRef, ready, error, retry }: CameraViewProps) {
   return (
     <div className={styles.container}>
       <video
@@ -29,6 +30,9 @@ export default function CameraView({ videoRef, canvasRef, ready, error }: Camera
       {error && (
         <div className={styles.overlay}>
           <p className={styles.error}>{error}</p>
+          <button type="button" className={styles.retryBtn} onClick={retry}>
+            Reintentar
+          </button>
         </div>
       )}
     </div>

@@ -6,6 +6,26 @@ interface UseCameraReturn {
   error: string | null;
   ready: boolean;
   toggleCamera: () => void;
+  retry: () => void;
+  isSecure: boolean;
+  hasAPI: boolean;
+}
+
+function getCameraError(err: unknown, isSecure: boolean): string {
+  const domErr = err as DOMException;
+  if (!isSecure && domErr?.name === 'NotAllowedError') {
+    return 'Cámara bloqueada por HTTP. Usa HTTPS o activa chrome://flags/#unsafely-treat-insecure-origin-as-secure';
+  }
+  if (domErr?.name === 'NotAllowedError') {
+    return 'Permiso denegado. Ve a Ajustes > Chrome/Safari > Cámara y actívalo para este sitio.';
+  }
+  if (domErr?.name === 'NotFoundError') {
+    return 'No se encontró cámara en el dispositivo.';
+  }
+  if (domErr?.name === 'NotReadableError') {
+    return 'La cámara está siendo usada por otra app. Ciérrala e intenta de nuevo.';
+  }
+  return 'No se pudo acceder a la cámara. Verifica permisos del navegador.';
 }
 
 export function useCamera(): UseCameraReturn {
@@ -15,6 +35,11 @@ export function useCamera(): UseCameraReturn {
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [facing, setFacing] = useState<'environment' | 'user'>('environment');
+
+  const isSecure = typeof window !== 'undefined'
+    ? window.location.protocol === 'https:' || window.location.hostname === 'localhost'
+    : false;
+  const hasAPI = typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
 
   const startCamera = useCallback(async () => {
     try {
@@ -42,18 +67,9 @@ export function useCamera(): UseCameraReturn {
         };
       }
     } catch (err: unknown) {
-      const domErr = err as DOMException;
-      if (domErr?.name === 'NotAllowedError') {
-        setError('Permiso de cámara denegado. Debes aceptar el permiso en tu navegador.');
-      } else if (domErr?.name === 'NotFoundError') {
-        setError('No se encontró cámara en el dispositivo.');
-      } else if (domErr?.name === 'NotReadableError') {
-        setError('La cámara está siendo usada por otra app.');
-      } else {
-        setError('No se pudo acceder a la cámara. Asegúrate de usar HTTPS.');
-      }
+      setError(getCameraError(err, isSecure));
     }
-  }, [facing]);
+  }, [facing, isSecure]);
 
   useEffect(() => {
     startCamera();
@@ -62,9 +78,13 @@ export function useCamera(): UseCameraReturn {
     };
   }, [startCamera]);
 
+  const retry = useCallback(() => {
+    startCamera();
+  }, [startCamera]);
+
   const toggleCamera = useCallback(() => {
     setFacing((prev) => (prev === 'environment' ? 'user' : 'environment'));
   }, []);
 
-  return { videoRef, canvasRef, error, ready, toggleCamera };
+  return { videoRef, canvasRef, error, ready, toggleCamera, retry, isSecure, hasAPI };
 }
