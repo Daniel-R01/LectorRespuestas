@@ -11,49 +11,23 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(bodyParser.json({ limit: '10kb' }));
+app.use(bodyParser.json({ limit: '1mb' }));
 
 const apiKey = process.env.ANTHROPIC_API_KEY || '';
-if (!apiKey) {
-  console.error('ANTHROPIC_API_KEY not set');
-}
+if (!apiKey) console.error('ANTHROPIC_API_KEY not set');
 
 const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
-const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. El usuario te enviará texto extraído con OCR de una pantalla con una pregunta de opción múltiple (a, b, c, d) con 10 segundos por pregunta. Responde ÚNICAMENTE la letra de la opción correcta (a, b, c o d). No escribas nada más, ni explicaciones, ni puntos, ni espacios. Solo la letra.`;
+const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Recibiras una imagen de una pantalla con una pregunta de opcion multiple (a, b, c, d). Responde UNICAMENTE la letra correcta. Nada mas.`;
 
 function parseAnswer(raw) {
-  if (!raw) return { answer: '' };
-
+  if (!raw) return '';
   const cleaned = raw.trim().toLowerCase();
-
-  const lineMatch = cleaned.match(/\b([a-d])\b/);
-  if (lineMatch) return { answer: lineMatch[1] };
-
-  const letterOnly = cleaned.replace(/[^a-d]/g, '');
-  if (letterOnly.length === 1) return { answer: letterOnly };
-
-  return { answer: '' };
-}
-
-function getClaudeError(err) {
-  const s = err?.status;
-  const msg = String(err?.message || err || '');
-  const lower = msg.toLowerCase();
-
-  if (s === 401 || s === 403 || lower.includes('api key') || lower.includes('api_key') || lower.includes('auth') || lower.includes('x-api-key') || lower.includes('permission')) {
-    return 'API key de Claude inválida. Verificá ANTHROPIC_API_KEY en Render.';
-  }
-  if (s === 429 || lower.includes('rate') || lower.includes('quota')) {
-    return 'Demasiadas consultas. Esperá unos segundos.';
-  }
-  if (s === 400) {
-    return 'Solicitud inválida a Claude.';
-  }
-  if (s === 500 || s === 502 || s === 503 || lower.includes('overload')) {
-    return 'Servicio de Claude no disponible. Reintentá.';
-  }
-  return `Error: ${msg.slice(0, 80)}`;
+  const m = cleaned.match(/\b([a-d])\b/);
+  if (m) return m[1];
+  const letters = cleaned.replace(/[^a-d]/g, '');
+  if (letters.length === 1) return letters;
+  return '';
 }
 
 app.get('/api/health', (_req, res) => {
@@ -62,30 +36,46 @@ app.get('/api/health', (_req, res) => {
 
 app.post('/api/ask', async (req, res) => {
   if (!apiKey) {
-    return res.status(500).json({ error: 'API key de Claude no configurada. Agregala en Render > Environment.' });
+    return res.status(500).json({ error: 'API key no configurada. Agregala en Render.' });
   }
 
-  const { text } = req.body;
-  if (!text || typeof text !== 'string' || text.length < 5) {
-    return res.status(400).json({ error: 'Texto muy corto o inválido. Apunta mejor la cámara.' });
+  const { image } = req.body;
+  if (!image || typeof image !== 'string' || !image.startsWith('data:')) {
+    return res.status(400).json({ error: 'Imagen invalida o faltante.' });
   }
+
+  // Extract base64 and media type
+  const [header, data] = image.split(',');
+  const mediaType = header.match(/data:(.*);base64/)?.[1] || 'image/jpeg';
 
   try {
     const msg = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 10,
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: text }],
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mediaType, data } },
+          { type: 'text', text: 'Responde solo a, b, c o d.' },
+        ],
+      }],
     });
 
     const content = msg.content[0]?.type === 'text' ? msg.content[0].text : '';
-    console.log('Claude response:', content);
-
-    const { answer } = parseAnswer(content);
-    res.json({ answer });
+    console.log('Claude:', content);
+    res.json({ answer: parseAnswer(content) });
   } catch (err) {
     console.error('Claude error:', err.status || '', err.message || err);
-    res.status(500).json({ error: getClaudeError(err) });
+    const s = err?.status;
+    const m = String(err?.message || '');
+    if (s === 401 || m.includes('api key') || m.includes('auth')) {
+      return res.status(500).json({ error: 'API key de Claude invalida.' });
+    }
+    if (s === 429 || m.includes('rate')) {
+      return res.status(500).json({ error: 'Demasiadas consultas. Espera.' });
+    }
+    res.status(500).json({ error: m.slice(0, 80) || 'Error al procesar.' });
   }
 });
 
@@ -98,5 +88,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(PORT, () => {
-  console.log(`Server on :${PORT} | API key: ${apiKey ? 'OK' : 'MISSING'}`);
+  console.log(`Server :${PORT} | Key: ${apiKey ? 'OK' : 'MISSING'}`);
 });

@@ -4,7 +4,7 @@ interface UseLLMReturn {
   answer: string;
   loading: boolean;
   error: string | null;
-  askQuestion: (text: string, force?: boolean) => Promise<void>;
+  askQuestion: (imageBase64: string, force?: boolean) => Promise<void>;
   reset: () => void;
 }
 
@@ -20,7 +20,7 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
   }, []);
 
   const askQuestion = useCallback(
-    async (text: string, force = false) => {
+    async (imageBase64: string, force = false) => {
       const now = Date.now();
       if (!force && now - lastAskRef.current < minIntervalMs) return;
       lastAskRef.current = now;
@@ -30,31 +30,30 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
       setAnswer('');
 
       try {
-        const timeoutController = new AbortController();
-        const timeoutId = setTimeout(() => timeoutController.abort(), 15000);
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 15000);
 
         const res = await fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text }),
-          signal: timeoutController.signal,
+          body: JSON.stringify({ image: imageBase64 }),
+          signal: ctrl.signal,
         });
 
-        clearTimeout(timeoutId);
-
+        clearTimeout(tid);
         const data = await res.json();
 
         if (!res.ok) {
-          setError(data.error || `Error del servidor (${res.status})`);
+          setError(data.error || `Error (${res.status})`);
           return;
         }
 
         setAnswer(data.answer);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
-          setError('La consulta tardó demasiado. Reintentá.');
+          setError('Timeout. Reintenta.');
         } else {
-          setError('No se pudo conectar con el servidor');
+          setError('No se pudo conectar con el servidor.');
         }
         console.error(err);
       } finally {

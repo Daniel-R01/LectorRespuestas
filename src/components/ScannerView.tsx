@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useCamera } from '../hooks/useCamera';
-import { useOCR } from '../hooks/useOCR';
+import { useCamera, hasContentChanged, isLowVariance } from '../hooks/useCamera';
 import { useLLM } from '../hooks/useLLM';
-import { cleanOCRText } from '../utils/parser';
 import CameraView from './CameraView';
 import AnswerOverlay from './AnswerOverlay';
 import CaptureButton from './CaptureButton';
@@ -13,90 +11,97 @@ interface ScannerViewProps {
 }
 
 export default function ScannerView({ onBack }: ScannerViewProps) {
-  const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry, captureHighResFrame } = useCamera();
-  const {
-    text: ocrText,
-    workerReady,
-    loadingMessage,
-    error: ocrError,
-    retryWorker,
-  } = useOCR(canvasRef, videoRef, captureHighResFrame, 1000);
-  const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
+  const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry, captureFrame } = useCamera();
+  const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(4000);
 
   const [autoDetect, setAutoDetect] = useState(false);
-  const [justTried, setJustTried] = useState(false);
   const [flash, setFlash] = useState(false);
-  const prevOcrRef = useRef('');
-  const lastAutoSendRef = useRef(0);
+  const [logText, setLogText] = useState('');
+  const prevDiffRef = useRef<ImageData | null>(null);
+  const autoTimerRef = useRef<number | null>(null);
+  const lastAnswerRef = useRef('');
 
   useEffect(() => {
-    if (justTried) {
-      const t = setTimeout(() => setJustTried(false), 2000);
-      return () => clearTimeout(t);
-    }
-  }, [justTried]);
-
-  useEffect(() => {
-    if (flash) {
-      const t = setTimeout(() => setFlash(false), 300);
-      return () => clearTimeout(t);
-    }
+    if (flash) { const t = setTimeout(() => setFlash(false), 300); return () => clearTimeout(t); }
   }, [flash]);
 
+  // AUTO mode: capture every 3 seconds
   useEffect(() => {
-    if (!autoDetect || !ocrText || llmLoading || !workerReady) return;
+    if (!autoDetect || !ready || llmLoading) return;
 
-    const prev = prevOcrRef.current;
-    if (!prev) {
-      prevOcrRef.current = ocrText;
-      return;
-    }
+    const tick = async () => {
+      const frame = await captureFrame();
+      if (!frame) return;
 
-    if (ocrText === prev) return;
+      const { base64, diffData } = frame;
 
-    const wordChange = Math.abs(ocrText.length - prev.length) > 20
-      || ocrText.split(/\s+/).filter((w) => !prev.includes(w)).length > 4;
-
-    if (wordChange) {
-      const now = Date.now();
-      if (now - lastAutoSendRef.current > 8000) {
-        lastAutoSendRef.current = now;
-        reset();
-        askQuestion(cleanOCRText(ocrText), false);
+      // Check if content changed vs previous frame
+      if (prevDiffRef.current && !hasContentChanged(prevDiffRef.current, diffData)) {
+        return;
       }
+
+      // Check if frame has meaningful content (not blank/dark screen)
+      if (isLowVariance(diffData)) {
+        return;
+      }
+
+      prevDiffRef.current = diffData;
+      setLogText('Detectada pregunta. Consultando…');
+
+      // Only ask if answer would be different from last (skip duplicates)
+      await askQuestion(base64, false);
+    };
+
+    autoTimerRef.current = window.setInterval(tick, 3000);
+    tick(); // First tick immediately
+
+    return () => {
+      if (autoTimerRef.current) clearInterval(autoTimerRef.current);
+    };
+  }, [autoDetect, ready, llmLoading, captureFrame, askQuestion]);
+
+  // Update log when answer arrives
+  useEffect(() => {
+    if (answer && answer !== lastAnswerRef.current) {
+      lastAnswerRef.current = answer;
+      setLogText(`Respuesta: ${answer.toUpperCase()}`);
     }
+    if (llmError) {
+      setLogText(llmError);
+    }
+    if (llmLoading) {
+      setLogText('Consultando IA…');
+    }
+  }, [answer, llmError, llmLoading]);
 
-    prevOcrRef.current = ocrText;
-  }, [ocrText, autoDetect, llmLoading, workerReady, askQuestion, reset]);
-
-  const handleCapture = () => {
+  const handleCapture = async () => {
     setFlash(true);
-    if (!ocrText) {
-      setJustTried(true);
-      return;
-    }
     if (llmLoading) return;
-    lastAutoSendRef.current = 0;
+    setLogText('Capturando…');
+
+    const frame = await captureFrame();
+    if (!frame) { setLogText('Error al capturar.'); return; }
+
+    prevDiffRef.current = frame.diffData;
     reset();
-    askQuestion(cleanOCRText(ocrText), true);
+    askQuestion(frame.base64, true);
   };
 
   const handleClear = () => {
     reset();
-    prevOcrRef.current = '';
-    lastAutoSendRef.current = 0;
+    lastAnswerRef.current = '';
+    prevDiffRef.current = null;
+    setLogText('Apunta la camara a una pregunta…');
   };
 
   const hasResult = !!(answer || llmError);
-  const hasText = !!ocrText;
 
-  const logLine = ocrError
-    ? `⚠ ${ocrError}`
-    : !workerReady
-      ? loadingMessage
-      : ocrText
-        ? ocrText.slice(0, 60)
-        : 'Apunta la cámara a una pregunta…';
+  // Initial log message
+  useEffect(() => {
+    if (ready && !logText) {
+      setLogText('Apunta la camara a una pregunta…');
+    }
+  }, [ready, logText]);
 
   return (
     <>
@@ -109,42 +114,21 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
         showScan={autoDetect}
       />
 
-      <AnswerOverlay
-        answer={answer}
-        loading={llmLoading}
-        error={llmError}
-      />
+      <AnswerOverlay answer={answer} loading={llmLoading} error={llmError} />
 
       {ready && (
         <>
           {flash && <div className={styles.flash} />}
 
           <div className={styles.topBar}>
-            <button type="button" className={styles.stopBtn} onClick={onBack}>
-              ✕
-            </button>
+            <button type="button" className={styles.stopBtn} onClick={onBack}>✕</button>
             <div className={styles.spacer} />
-            <button type="button" className={styles.flipBtn} onClick={toggleCamera}>
-              🔄
-            </button>
+            <button type="button" className={styles.flipBtn} onClick={toggleCamera}>🔄</button>
           </div>
 
-          {ocrError && (
-            <div className={styles.ocrErrorBar}>
-              <span>{ocrError}</span>
-              <button type="button" className={styles.ocrRetryBtn} onClick={retryWorker}>
-                Reintentar
-              </button>
-            </div>
-          )}
-
-          {justTried && !hasText && !llmLoading && (
-            <div className={styles.toast}>Sin texto detectado. Apunta mejor la cámara.</div>
-          )}
-
           <div className={styles.logBox}>
-            <span className={`${styles.logText} ${ocrError ? styles.logErr : ''}`}>
-              {logLine}
+            <span className={`${styles.logText} ${llmError ? styles.logErr : ''}`}>
+              {logText || 'Apunta la camara a una pregunta…'}
             </span>
           </div>
 
@@ -154,7 +138,6 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
             autoDetect={autoDetect}
             onSetAuto={(v) => setAutoDetect(v)}
             loading={llmLoading}
-            hasText={hasText}
           />
         </>
       )}
