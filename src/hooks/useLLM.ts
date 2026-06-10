@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from 'react';
-import { formatQuestion } from '../utils/prompt';
 
 interface UseLLMReturn {
   answer: string;
@@ -37,7 +36,7 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
         const res = await fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: formatQuestion(text) }),
+          body: JSON.stringify({ text }),
           signal: timeoutController.signal,
         });
 

@@ -33,7 +33,6 @@ export function useCamera(): UseCameraReturn {
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [facing, setFacing] = useState<'environment' | 'user'>('environment');
-  const prevFacingRef = useRef<'environment' | 'user'>('environment');
 
   const isSecure = typeof window !== 'undefined'
     ? window.location.protocol === 'https:' || window.location.hostname === 'localhost'
@@ -57,7 +56,6 @@ export function useCamera(): UseCameraReturn {
       });
 
       streamRef.current = stream;
-      prevFacingRef.current = facingMode;
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;

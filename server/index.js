@@ -26,10 +26,13 @@ function parseAnswer(raw) {
   if (!raw) return { answer: '' };
 
   const cleaned = raw.trim().toLowerCase();
-  const letter = cleaned.replace(/[^a-d]/g, '');
-  if (letter.length >= 1) {
-    return { answer: letter[0] };
-  }
+
+  const lineMatch = cleaned.match(/\b([a-d])\b/);
+  if (lineMatch) return { answer: lineMatch[1] };
+
+  const letterOnly = cleaned.replace(/[^a-d]/g, '');
+  if (letterOnly.length === 1) return { answer: letterOnly };
+
   return { answer: '' };
 }
 
