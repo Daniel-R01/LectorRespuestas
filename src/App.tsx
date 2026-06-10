@@ -9,5 +9,5 @@ export default function App() {
     return <StartScreen onStart={() => setStarted(true)} />;
   }
 
-  return <ScannerView />;
+  return <ScannerView onBack={() => setStarted(false)} />;
 }

@@ -7,7 +7,11 @@ import CameraView from './CameraView';
 import AnswerOverlay from './AnswerOverlay';
 import CaptureButton from './CaptureButton';
 
-export default function ScannerView() {
+interface ScannerViewProps {
+  onBack: () => void;
+}
+
+export default function ScannerView({ onBack }: ScannerViewProps) {
   const { videoRef, canvasRef, ready, error: cameraError, toggleCamera } = useCamera();
   const { text: ocrText, workerReady, loadingMessage } = useOCR(canvasRef, videoRef, 1000);
   const { answer, explanation, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(8000);
@@ -85,11 +89,32 @@ export default function ScannerView() {
 
           <button
             type="button"
-            onClick={toggleCamera}
+            onClick={onBack}
             style={{
               position: 'fixed',
               top: 8,
               left: 12,
+              zIndex: 20,
+              background: 'rgba(220,38,38,0.7)',
+              color: '#fff',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: 12,
+              padding: '6px 14px',
+              fontSize: 12,
+              fontFamily: 'system-ui',
+              cursor: 'pointer',
+            }}
+          >
+            ✕ Detener
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleCamera}
+            style={{
+              position: 'fixed',
+              top: 8,
+              left: 100,
               zIndex: 20,
               background: 'rgba(0,0,0,0.5)',
               color: '#fff',
