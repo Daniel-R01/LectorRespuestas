@@ -13,14 +13,14 @@ interface ScannerViewProps {
 }
 
 export default function ScannerView({ onBack }: ScannerViewProps) {
-  const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry } = useCamera();
+  const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry, captureHighResFrame } = useCamera();
   const {
     text: ocrText,
     workerReady,
     loadingMessage,
     error: ocrError,
     retryWorker,
-  } = useOCR(canvasRef, videoRef, 1000);
+  } = useOCR(canvasRef, videoRef, captureHighResFrame, 1000);
   const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
 
   const [autoDetect, setAutoDetect] = useState(false);

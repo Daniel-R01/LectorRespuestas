@@ -7,6 +7,7 @@ interface UseCameraReturn {
   ready: boolean;
   toggleCamera: () => void;
   retry: () => void;
+  captureHighResFrame: () => Promise<ImageBitmap | null>;
 }
 
 function getCameraError(err: unknown, isSecure: boolean): string {
@@ -30,6 +31,7 @@ export function useCamera(): UseCameraReturn {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const imageCaptureRef = useRef<ImageCapture | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [facing, setFacing] = useState<'environment' | 'user'>('environment');
@@ -45,15 +47,24 @@ export function useCamera(): UseCameraReturn {
 
       streamRef.current?.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
+      imageCaptureRef.current = null;
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: facingMode },
-        },
+        video: { facingMode: { ideal: facingMode } },
         audio: false,
       });
 
       streamRef.current = stream;
+
+      // Create ImageCapture from the video track for high-res captures
+      const track = stream.getVideoTracks()[0];
+      if (track && typeof ImageCapture !== 'undefined') {
+        try {
+          imageCaptureRef.current = new ImageCapture(track);
+        } catch {
+          // ImageCapture not available
+        }
+      }
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -72,6 +83,7 @@ export function useCamera(): UseCameraReturn {
     return () => {
       streamRef.current?.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
+      imageCaptureRef.current = null;
     };
   }, []);
 
@@ -85,5 +97,36 @@ export function useCamera(): UseCameraReturn {
     startCamera(facing);
   }, [facing, startCamera]);
 
-  return { videoRef, canvasRef, error, ready, toggleCamera, retry };
+  const captureHighResFrame = useCallback(async (): Promise<ImageBitmap | null> => {
+    if (imageCaptureRef.current) {
+      try {
+        return await imageCaptureRef.current.grabFrame();
+      } catch {
+        // Fall back to canvas
+      }
+    }
+
+    // Fallback: capture from video via canvas
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return null;
+
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    if (!vw || !vh) return null;
+
+    canvas.width = vw;
+    canvas.height = vh;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.drawImage(video, 0, 0, vw, vh);
+
+    try {
+      return await createImageBitmap(canvas);
+    } catch {
+      return null;
+    }
+  }, []);
+
+  return { videoRef, canvasRef, error, ready, toggleCamera, retry, captureHighResFrame };
 }

@@ -12,6 +12,7 @@ interface UseOCRReturn {
 export function useOCR(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
   videoRef: React.RefObject<HTMLVideoElement | null>,
+  captureHighResFrame: () => Promise<ImageBitmap | null>,
   intervalMs = 1000,
 ): UseOCRReturn {
   const [text, setText] = useState('');
@@ -81,24 +82,23 @@ export function useOCR(
 
     const doCapture = async () => {
       if (processingRef.current) return;
-      const video = videoRef.current;
       const canvas = canvasRef.current;
       const worker = workerRef.current;
-      if (!video || !canvas || !worker) return;
-
-      const vw = video.videoWidth;
-      const vh = video.videoHeight;
-      if (!vw || !vh) return;
+      if (!canvas || !worker) return;
 
       processingRef.current = true;
 
       try {
+        const frame = await captureHighResFrame();
+        if (!frame) return;
+
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        canvas.width = vw;
-        canvas.height = vh;
-        ctx.drawImage(video, 0, 0, vw, vh);
+        canvas.width = frame.width;
+        canvas.height = frame.height;
+        ctx.drawImage(frame, 0, 0);
+        frame.close();
 
         const { data } = await worker.recognize(canvas);
         const recognized = data.text.trim();
@@ -116,7 +116,7 @@ export function useOCR(
 
     const id = setInterval(doCapture, intervalMs);
     return () => clearInterval(id);
-  }, [canvasRef, videoRef, workerReady, intervalMs]);
+  }, [captureHighResFrame, canvasRef, videoRef, workerReady, intervalMs]);
 
   return { text, loadingMessage, workerReady, error, retryWorker };
 }
