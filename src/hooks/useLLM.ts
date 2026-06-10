@@ -3,7 +3,6 @@ import { formatQuestion } from '../utils/prompt';
 
 interface UseLLMReturn {
   answer: string;
-  explanation: string;
   loading: boolean;
   error: string | null;
   askQuestion: (text: string, force?: boolean) => Promise<void>;
@@ -12,14 +11,12 @@ interface UseLLMReturn {
 
 export function useLLM(minIntervalMs = 6000): UseLLMReturn {
   const [answer, setAnswer] = useState('');
-  const [explanation, setExplanation] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lastAskRef = useRef(0);
 
   const reset = useCallback(() => {
     setAnswer('');
-    setExplanation('');
     setError(null);
   }, []);
 
@@ -32,7 +29,6 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
       setLoading(true);
       setError(null);
       setAnswer('');
-      setExplanation('');
 
       try {
         const timeoutController = new AbortController();
@@ -55,7 +51,6 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
         }
 
         setAnswer(data.answer);
-        setExplanation(data.explanation);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
           setError('La consulta tardó demasiado. Reintentá.');
@@ -70,5 +65,5 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
     [minIntervalMs],
   );
 
-  return { answer, explanation, loading, error, askQuestion, reset };
+  return { answer, loading, error, askQuestion, reset };
 }

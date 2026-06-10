@@ -20,46 +20,17 @@ if (!apiKey) {
 
 const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
-const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Responde ÚNICAMENTE con dos líneas:
-
-PRIMERA LÍNEA: Solo la letra de la opción correcta (a, b, c o d).
-SEGUNDA LÍNEA: Una breve explicación de máximo 15 palabras.
-
-Ejemplo:
-b
-Un ETF es un fondo cotizado en bolsa que replica un índice.`;
+const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. El usuario te enviará texto extraído con OCR de una pantalla con una pregunta de opción múltiple (a, b, c, d) con 10 segundos por pregunta. Responde ÚNICAMENTE la letra de la opción correcta (a, b, c o d). No escribas nada más, ni explicaciones, ni puntos, ni espacios. Solo la letra.`;
 
 function parseAnswer(raw) {
-  if (!raw) return { answer: '', explanation: '' };
+  if (!raw) return { answer: '' };
 
-  const cleaned = raw.trim();
-  const lines = cleaned.split('\n').filter(Boolean);
-
-  for (const line of lines) {
-    const trimmed = line.trim().toLowerCase();
-    const match = trimmed.match(/^([a-d])[).\s]?/i);
-    if (match) {
-      const rest = lines.filter((_, i) => i !== lines.indexOf(line)).join(' ').trim();
-      return {
-        answer: match[1].toLowerCase(),
-        explanation: rest || trimmed.slice(1).trim() || '',
-      };
-    }
+  const cleaned = raw.trim().toLowerCase();
+  const letter = cleaned.replace(/[^a-d]/g, '');
+  if (letter.length >= 1) {
+    return { answer: letter[0] };
   }
-
-  const onlyLetter = cleaned.replace(/[^a-dA-D]/g, '').toLowerCase();
-  if (onlyLetter.length === 1 && /^[a-d]$/.test(onlyLetter)) {
-    return { answer: onlyLetter, explanation: '' };
-  }
-
-  const lower = cleaned.toLowerCase();
-  for (const letter of ['a', 'b', 'c', 'd']) {
-    if (lower.includes(`la letra ${letter}`) || lower.includes(`opción ${letter}`) || lower.includes(`es la ${letter}`)) {
-      return { answer: letter, explanation: cleaned };
-    }
-  }
-
-  return { answer: '', explanation: cleaned };
+  return { answer: '' };
 }
 
 function getClaudeError(err) {
@@ -99,7 +70,7 @@ app.post('/api/ask', async (req, res) => {
   try {
     const msg = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 150,
+      max_tokens: 10,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: text }],
     });
@@ -107,8 +78,8 @@ app.post('/api/ask', async (req, res) => {
     const content = msg.content[0]?.type === 'text' ? msg.content[0].text : '';
     console.log('Claude response:', content);
 
-    const { answer, explanation } = parseAnswer(content);
-    res.json({ answer, explanation });
+    const { answer } = parseAnswer(content);
+    res.json({ answer });
   } catch (err) {
     console.error('Claude error:', err.status || '', err.message || err);
     res.status(500).json({ error: getClaudeError(err) });

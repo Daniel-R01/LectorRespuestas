@@ -21,7 +21,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
     error: ocrError,
     retryWorker,
   } = useOCR(canvasRef, videoRef, 1000);
-  const { answer, explanation, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
+  const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
 
   const [autoDetect, setAutoDetect] = useState(true);
   const [justTried, setJustTried] = useState(false);
@@ -87,7 +87,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
     lastAutoSendRef.current = 0;
   };
 
-  const hasResult = !!(answer || explanation || llmError);
+  const hasResult = !!(answer || llmError);
   const hasText = !!ocrText;
 
   return (
@@ -103,7 +103,6 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
 
       <AnswerOverlay
         answer={answer}
-        explanation={explanation}
         loading={llmLoading}
         error={llmError}
       />
