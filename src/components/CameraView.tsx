@@ -7,20 +7,21 @@ interface CameraViewProps {
   ready: boolean;
   error: string | null;
   retry: () => void;
+  showScan: boolean;
 }
 
-export default function CameraView({ videoRef, canvasRef, ready, error, retry }: CameraViewProps) {
+export default function CameraView({ videoRef, canvasRef, ready, error, retry, showScan }: CameraViewProps) {
   const [scanPos, setScanPos] = useState(0);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !showScan) return;
     let pos = 0;
     const id = setInterval(() => {
       pos = (pos + 2) % 100;
       setScanPos(pos);
     }, 40);
     return () => clearInterval(id);
-  }, [ready]);
+  }, [ready, showScan]);
 
   return (
     <div className={styles.container}>
@@ -33,7 +34,7 @@ export default function CameraView({ videoRef, canvasRef, ready, error, retry }:
       />
       <canvas ref={canvasRef} className={styles.canvas} />
 
-      {ready && (
+      {ready && showScan && (
         <div
           className={styles.scanLine}
           style={{ top: `${scanPos}%` }}

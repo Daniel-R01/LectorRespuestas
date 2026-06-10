@@ -1,11 +1,12 @@
 {
   "name": "lectorrespuestas",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:server": "tsx server/index.js",
+    "prebuild": "node scripts/bump-version.js",
     "build": "tsc -b && vite build",
     "start": "node server/index.js",
     "lint": "eslint .",

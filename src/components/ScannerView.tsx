@@ -25,6 +25,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
 
   const [autoDetect, setAutoDetect] = useState(true);
   const [justTried, setJustTried] = useState(false);
+  const [flash, setFlash] = useState(false);
   const prevOcrRef = useRef('');
   const lastAutoSendRef = useRef(0);
 
@@ -34,6 +35,13 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
       return () => clearTimeout(t);
     }
   }, [justTried]);
+
+  useEffect(() => {
+    if (flash) {
+      const t = setTimeout(() => setFlash(false), 300);
+      return () => clearTimeout(t);
+    }
+  }, [flash]);
 
   useEffect(() => {
     if (!autoDetect || !ocrText || llmLoading || !workerReady) return;
@@ -62,6 +70,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
   }, [ocrText, autoDetect, llmLoading, workerReady, askQuestion, reset]);
 
   const handleCapture = () => {
+    setFlash(true);
     if (!ocrText) {
       setJustTried(true);
       return;
@@ -89,6 +98,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
         ready={ready}
         error={cameraError}
         retry={retry}
+        showScan={autoDetect}
       />
 
       <AnswerOverlay
@@ -100,6 +110,8 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
 
       {ready && (
         <>
+          {flash && <div className={styles.flash} />}
+
           <div className={styles.topBar}>
             <button type="button" className={styles.stopBtn} onClick={onBack}>
               ✕
