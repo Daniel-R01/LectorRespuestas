@@ -4,7 +4,7 @@ interface CaptureButtonProps {
   onCapture: () => void;
   onClear?: () => void;
   autoDetect: boolean;
-  onToggleAuto: () => void;
+  onSetAuto: (v: boolean) => void;
   loading: boolean;
   hasText: boolean;
 }
@@ -13,20 +13,30 @@ export default function CaptureButton({
   onCapture,
   onClear,
   autoDetect,
-  onToggleAuto,
+  onSetAuto,
   loading,
   hasText,
 }: CaptureButtonProps) {
   return (
     <div className={styles.container}>
-      <button
-        type="button"
-        className={`${styles.modeBtn} ${autoDetect ? styles.modeAuto : styles.modeManual}`}
-        onClick={onToggleAuto}
-      >
-        <span className={styles.modeDot} />
-        {autoDetect ? 'AUTO' : 'MANUAL'}
-      </button>
+      <div className={styles.modeGroup}>
+        <button
+          type="button"
+          className={`${styles.modeBtn} ${!autoDetect ? styles.active : ''}`}
+          onClick={() => onSetAuto(false)}
+        >
+          <span className={styles.modeDot} />
+          MANUAL
+        </button>
+        <button
+          type="button"
+          className={`${styles.modeBtn} ${autoDetect ? styles.active : ''}`}
+          onClick={() => onSetAuto(true)}
+        >
+          <span className={styles.modeDot} />
+          AUTO
+        </button>
+      </div>
 
       <button
         type="button"

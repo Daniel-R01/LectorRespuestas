@@ -148,7 +148,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
             onCapture={handleCapture}
             onClear={hasResult ? handleClear : undefined}
             autoDetect={autoDetect}
-            onToggleAuto={() => setAutoDetect((v) => !v)}
+            onSetAuto={(v) => setAutoDetect(v)}
             loading={llmLoading}
             hasText={hasText}
           />

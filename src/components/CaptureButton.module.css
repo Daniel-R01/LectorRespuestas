@@ -6,48 +6,52 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
   z-index: 20;
   padding: 0 20px;
+}
+
+.modeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .modeBtn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 10px 14px;
-  border-radius: 24px;
-  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
   cursor: pointer;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: all 0.25s;
-  border: 1px solid;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.3);
+  min-width: 70px;
 }
 
-.modeManual {
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.4);
-}
-
-.modeAuto {
-  background: rgba(74,222,128,0.12);
-  border-color: rgba(74,222,128,0.35);
+.modeBtn.active {
+  background: rgba(74,222,128,0.15);
+  border-color: rgba(74,222,128,0.4);
   color: #4ade80;
 }
 
 .modeDot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: currentColor;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-.modeAuto .modeDot {
+.modeBtn.active .modeDot {
   opacity: 1;
   box-shadow: 0 0 6px currentColor;
 }
