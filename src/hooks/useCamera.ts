@@ -10,11 +10,8 @@ interface UseCameraReturn {
   captureHighResFrame: () => Promise<ImageBitmap | null>;
 }
 
-function getCameraError(err: unknown, isSecure: boolean): string {
+function getCameraError(err: unknown): string {
   const domErr = err as DOMException;
-  if (!isSecure && domErr?.name === 'NotAllowedError') {
-    return 'Cámara bloqueada por HTTP. Debes usar HTTPS.';
-  }
   if (domErr?.name === 'NotAllowedError') {
     return 'Permiso denegado. Ve a Ajustes > Navegador > Cámara y actívalo.';
   }
@@ -24,7 +21,46 @@ function getCameraError(err: unknown, isSecure: boolean): string {
   if (domErr?.name === 'NotReadableError') {
     return 'La cámara está en uso por otra app. Ciérrala.';
   }
+  if (domErr?.name === 'OverconstrainedError') {
+    return 'No se pudo acceder a la cámara trasera.';
+  }
   return 'No se pudo acceder a la cámara.';
+}
+
+async function tryGetStream(facingMode: 'environment' | 'user'): Promise<MediaStream | null> {
+  // Try 1: exact back camera, 4K resolution
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { exact: facingMode },
+        width: { min: 1920, ideal: 3840 },
+        frameRate: { ideal: 30 },
+      },
+      audio: false,
+    });
+  } catch { /* fall through */ }
+
+  // Try 2: ideal back camera, 1080p
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: facingMode },
+        width: { min: 1280, ideal: 1920 },
+        frameRate: { ideal: 30 },
+      },
+      audio: false,
+    });
+  } catch { /* fall through */ }
+
+  // Try 3: just the facing mode
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: facingMode } },
+      audio: false,
+    });
+  } catch { /* fall through */ }
+
+  return null;
 }
 
 export function useCamera(): UseCameraReturn {
@@ -36,10 +72,6 @@ export function useCamera(): UseCameraReturn {
   const [ready, setReady] = useState(false);
   const [facing, setFacing] = useState<'environment' | 'user'>('environment');
 
-  const isSecure = typeof window !== 'undefined'
-    ? window.location.protocol === 'https:' || window.location.hostname === 'localhost'
-    : false;
-
   const startCamera = useCallback(async (facingMode: 'environment' | 'user') => {
     try {
       setError(null);
@@ -49,21 +81,23 @@ export function useCamera(): UseCameraReturn {
       streamRef.current = null;
       imageCaptureRef.current = null;
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: facingMode } },
-        audio: false,
-      });
+      const stream = await tryGetStream(facingMode);
+      if (!stream) {
+        setError('No se pudo acceder a la cámara.');
+        return;
+      }
 
       streamRef.current = stream;
 
-      // Create ImageCapture from the video track for high-res captures
+      // Create ImageCapture for high-res frame grabs
       const track = stream.getVideoTracks()[0];
+      const settings = track?.getSettings();
+      console.log('Camera:', settings?.width, 'x', settings?.height, '@', settings?.frameRate, 'fps', 'facing:', settings?.facingMode);
+
       if (track && typeof ImageCapture !== 'undefined') {
         try {
           imageCaptureRef.current = new ImageCapture(track);
-        } catch {
-          // ImageCapture not available
-        }
+        } catch { /* ImageCapture not supported */ }
       }
 
       if (videoRef.current) {
@@ -74,9 +108,9 @@ export function useCamera(): UseCameraReturn {
         };
       }
     } catch (err: unknown) {
-      setError(getCameraError(err, isSecure));
+      setError(getCameraError(err));
     }
-  }, [isSecure]);
+  }, []);
 
   useEffect(() => {
     startCamera(facing);
@@ -101,12 +135,9 @@ export function useCamera(): UseCameraReturn {
     if (imageCaptureRef.current) {
       try {
         return await imageCaptureRef.current.grabFrame();
-      } catch {
-        // Fall back to canvas
-      }
+      } catch { /* fallback */ }
     }
 
-    // Fallback: capture from video via canvas
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return null;

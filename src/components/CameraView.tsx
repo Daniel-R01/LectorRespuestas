@@ -31,7 +31,6 @@ export default function CameraView({ videoRef, canvasRef, ready, error, retry, s
         autoPlay
         playsInline
         muted
-        disablePictureInPicture
       />
       <canvas ref={canvasRef} className={styles.canvas} />
 
@@ -52,15 +51,6 @@ export default function CameraView({ videoRef, canvasRef, ready, error, retry, s
 
       {ready && showScan && (
         <div className={styles.scanLine} style={{ top: `${scanPos}%` }} />
-      )}
-
-      {ready && (
-        <>
-          <div className={styles.cornerTL} />
-          <div className={styles.cornerTR} />
-          <div className={styles.cornerBL} />
-          <div className={styles.cornerBR} />
-        </>
       )}
 
       {error && (
