@@ -1,73 +1,52 @@
-# React + TypeScript + Vite
+# Lector Respuestas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+App web que usa la cámara del celular para leer preguntas de opción múltiple (a,b,c,d) en tiempo real y mostrar la respuesta correcta usando IA (Claude).
 
-Currently, two official plugins are available:
+## Cómo funciona
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Apunta la cámara a la pantalla con la pregunta
+2. OCR (Tesseract.js) detecta el texto automáticamente
+3. Se envía a Claude 3 Haiku para obtener la respuesta
+4. La respuesta se muestra como overlay en pantalla
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React + TypeScript + Vite
+- **OCR**: Tesseract.js v5 (browser-side)
+- **LLM**: Claude 3 Haiku (Anthropic)
+- **Server**: Express proxy
 
-## Expanding the ESLint configuration
+## Setup local
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+cp .env.example .env   # Agrega tu ANTHROPIC_API_KEY en .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+En dos terminales:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# Terminal 1 - Proxy server
+npm run dev:server
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Terminal 2 - Frontend dev
+npm run dev
 ```
+
+Abre `http://localhost:5173` en tu celular (misma red WiFi).
+
+## Deploy en Render
+
+1. Crea un Web Service en [Render](https://render.com)
+2. Conecta este repositorio de GitHub
+3. Configura:
+
+| Campo | Valor |
+|-------|-------|
+| Build Command | `npm install && npm run build` |
+| Start Command | `npm start` |
+| Environment | `ANTHROPIC_API_KEY` = tu API key |
+
+4. Deploy
+
+> El servidor Express sirve el frontend y el proxy `/api/ask` en un solo servicio.
