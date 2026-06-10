@@ -21,11 +21,11 @@ export default function CaptureButton({
     <div className={styles.container}>
       <button
         type="button"
-        className={`${styles.autoBtn} ${autoDetect ? styles.active : ''}`}
+        className={`${styles.modeBtn} ${autoDetect ? styles.modeAuto : styles.modeManual}`}
         onClick={onToggleAuto}
       >
-        <span className={styles.autoDot} />
-        AUTO
+        <span className={styles.modeDot} />
+        {autoDetect ? 'AUTO' : 'MANUAL'}
       </button>
 
       <button

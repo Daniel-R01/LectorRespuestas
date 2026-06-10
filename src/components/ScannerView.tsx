@@ -23,7 +23,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
   } = useOCR(canvasRef, videoRef, 1000);
   const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
 
-  const [autoDetect, setAutoDetect] = useState(true);
+  const [autoDetect, setAutoDetect] = useState(false);
   const [justTried, setJustTried] = useState(false);
   const [flash, setFlash] = useState(false);
   const prevOcrRef = useRef('');
