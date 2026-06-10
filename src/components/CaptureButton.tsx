@@ -21,25 +21,32 @@ export default function CaptureButton({
         type="button"
         className={`${styles.autoBtn} ${autoDetect ? styles.active : ''}`}
         onClick={onToggleAuto}
-        title={autoDetect ? 'Auto-detección activada' : 'Auto-detección desactivada'}
       >
+        <span className={styles.autoDot} />
         AUTO
       </button>
 
       <button
         type="button"
-        className={`${styles.captureBtn} ${loading ? styles.loading : ''} ${!hasText && !loading ? styles.disabled : ''}`}
+        className={`${styles.captureBtn} ${loading ? styles.loading : ''}`}
         onClick={onCapture}
         disabled={loading}
       >
-        {loading ? (
-          <div className={styles.pulse} />
-        ) : (
-          <div className={styles.ring} />
-        )}
+        <div className={styles.ringOuter}>
+          <div className={loading ? styles.ringLoading : styles.ringIdle} />
+        </div>
+        <div className={styles.ringInner} />
+        {loading && <div className={styles.pulse} />}
       </button>
 
-      <div className={styles.placeholder} />
+      <button
+        type="button"
+        className={`${styles.hintBtn} ${hasText ? styles.ready : ''}`}
+        onClick={onCapture}
+        disabled={!hasText || loading}
+      >
+        {loading ? 'Consultando…' : hasText ? 'Capturar' : 'Sin texto'}
+      </button>
     </div>
   );
 }

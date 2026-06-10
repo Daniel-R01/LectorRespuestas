@@ -12,9 +12,12 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json({ limit: '5kb' }));
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const apiKey = process.env.ANTHROPIC_API_KEY;
+if (!apiKey) {
+  console.error('⚠ ANTHROPIC_API_KEY no configurada en variables de entorno');
+}
+
+const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
 const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Responde ÚNICAMENTE con dos líneas:
 
@@ -57,6 +60,10 @@ function parseAnswer(raw) {
 
 app.post('/api/ask', async (req, res) => {
   try {
+    if (!apiKey) {
+      return res.status(500).json({ error: 'API key de Claude no configurada en el servidor' });
+    }
+
     const { text } = req.body;
     if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: 'No se proporcionó texto válido' });
@@ -73,13 +80,20 @@ app.post('/api/ask', async (req, res) => {
       ? msg.content[0].text
       : '';
 
-    console.log('Claude raw response:', content);
+    console.log('Claude response:', content);
 
     const { answer, explanation } = parseAnswer(content);
-
     res.json({ answer, explanation });
   } catch (err) {
     console.error('Claude API error:', err.message);
+
+    if (err.status === 401 || err.message?.includes('authentication')) {
+      return res.status(401).json({ error: 'API key de Claude inválida' });
+    }
+    if (err.status === 429 || err.message?.includes('rate')) {
+      return res.status(429).json({ error: 'Límite de consultas excedido. Espera unos segundos.' });
+    }
+
     res.status(500).json({
       error: 'Error al procesar la pregunta',
       details: err.message,
@@ -96,5 +110,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(PORT, () => {
-  console.log(`Proxy server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`API key: ${apiKey ? '✓ configurada' : '✗ FALTA'}`);
 });

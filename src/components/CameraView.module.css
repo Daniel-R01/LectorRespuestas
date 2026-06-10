@@ -16,6 +16,66 @@
   display: none;
 }
 
+.scanLine {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(74, 222, 128, 0.8),
+    rgba(74, 222, 128, 0.2),
+    transparent
+  );
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.5), 0 0 4px rgba(74, 222, 128, 0.8);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.cornerTL {
+  top: 60px;
+  left: 20px;
+  border-top: 2px solid rgba(74, 222, 128, 0.4);
+  border-left: 2px solid rgba(74, 222, 128, 0.4);
+  border-radius: 2px 0 0 0;
+}
+
+.cornerTR {
+  top: 60px;
+  right: 20px;
+  border-top: 2px solid rgba(74, 222, 128, 0.4);
+  border-right: 2px solid rgba(74, 222, 128, 0.4);
+  border-radius: 0 2px 0 0;
+}
+
+.cornerBL {
+  bottom: 160px;
+  left: 20px;
+  border-bottom: 2px solid rgba(74, 222, 128, 0.4);
+  border-left: 2px solid rgba(74, 222, 128, 0.4);
+  border-radius: 0 0 0 2px;
+}
+
+.cornerBR {
+  bottom: 160px;
+  right: 20px;
+  border-bottom: 2px solid rgba(74, 222, 128, 0.4);
+  border-right: 2px solid rgba(74, 222, 128, 0.4);
+  border-radius: 0 0 2px 0;
+}
+
 .overlay {
   position: absolute;
   inset: 0;

@@ -10,7 +10,7 @@ interface UseLLMReturn {
   reset: () => void;
 }
 
-export function useLLM(minIntervalMs = 8000): UseLLMReturn {
+export function useLLM(minIntervalMs = 6000): UseLLMReturn {
   const [answer, setAnswer] = useState('');
   const [explanation, setExplanation] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,8 @@ export function useLLM(minIntervalMs = 8000): UseLLMReturn {
 
       setLoading(true);
       setError(null);
+      setAnswer('');
+      setExplanation('');
 
       try {
         const res = await fetch('/api/ask', {
@@ -39,13 +41,17 @@ export function useLLM(minIntervalMs = 8000): UseLLMReturn {
           body: JSON.stringify({ text: formatQuestion(text) }),
         });
 
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-
         const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.error || `Error del servidor (${res.status})`);
+          return;
+        }
+
         setAnswer(data.answer);
         setExplanation(data.explanation);
       } catch (err) {
-        setError('Error al consultar la IA');
+        setError('No se pudo conectar con el servidor');
         console.error(err);
       } finally {
         setLoading(false);
