@@ -18,22 +18,22 @@ if (!apiKey) console.error('ANTHROPIC_API_KEY not set');
 
 const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
-const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Recibiras una imagen de una pantalla con una pregunta de opcion multiple (a, b, c, d). Responde UNICAMENTE la letra correcta. Nada mas.`;
+const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Recibiras una imagen de una pantalla con una pregunta de opcion multiple (a, b, c, d, e). Responde UNICAMENTE la letra correcta. Nada mas.`;
 
 function parseAnswer(raw) {
   if (!raw || !raw.trim()) return '';
   const cleaned = raw.trim().toLowerCase();
 
   // Try to find isolated letter
-  const m = cleaned.match(/\b([a-d])\b/);
+  const m = cleaned.match(/\b([a-e])\b/);
   if (m) return m[1];
 
-  // Try to find letter at start of a line
-  const lm = cleaned.match(/^([a-d])[).:\s]/m);
+  // Try to find letter at start of a line with delimiter
+  const lm = cleaned.match(/^([a-e])[).:\s]/m);
   if (lm) return lm[1];
 
-  // Just extract any a-d
-  const letters = cleaned.replace(/[^a-d]/g, '');
+  // Just extract any a-e
+  const letters = cleaned.replace(/[^a-e]/g, '');
   if (letters.length >= 1) return letters[0];
 
   return '';
@@ -66,7 +66,7 @@ app.post('/api/ask', async (req, res) => {
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: mediaType, data } },
-          { type: 'text', text: 'Responde solo a, b, c o d.' },
+          { type: 'text', text: 'Responde solo a, b, c, d o e.' },
         ],
       }],
     });
