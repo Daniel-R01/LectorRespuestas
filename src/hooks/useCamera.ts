@@ -41,8 +41,17 @@ export function useCamera(): UseCameraReturn {
           setReady(true);
         };
       }
-    } catch {
-      setError('No se pudo acceder a la cámara. Verifica permisos.');
+    } catch (err: unknown) {
+      const domErr = err as DOMException;
+      if (domErr?.name === 'NotAllowedError') {
+        setError('Permiso de cámara denegado. Debes aceptar el permiso en tu navegador.');
+      } else if (domErr?.name === 'NotFoundError') {
+        setError('No se encontró cámara en el dispositivo.');
+      } else if (domErr?.name === 'NotReadableError') {
+        setError('La cámara está siendo usada por otra app.');
+      } else {
+        setError('No se pudo acceder a la cámara. Asegúrate de usar HTTPS.');
+      }
     }
   }, [facing]);
 
