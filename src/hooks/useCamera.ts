@@ -7,25 +7,23 @@ interface UseCameraReturn {
   ready: boolean;
   toggleCamera: () => void;
   retry: () => void;
-  isSecure: boolean;
-  hasAPI: boolean;
 }
 
 function getCameraError(err: unknown, isSecure: boolean): string {
   const domErr = err as DOMException;
   if (!isSecure && domErr?.name === 'NotAllowedError') {
-    return 'Cámara bloqueada por HTTP. Usa HTTPS o activa chrome://flags/#unsafely-treat-insecure-origin-as-secure';
+    return 'Cámara bloqueada por HTTP. Debes usar HTTPS.';
   }
   if (domErr?.name === 'NotAllowedError') {
-    return 'Permiso denegado. Ve a Ajustes > Chrome/Safari > Cámara y actívalo para este sitio.';
+    return 'Permiso denegado. Ve a Ajustes > Navegador > Cámara y actívalo.';
   }
   if (domErr?.name === 'NotFoundError') {
     return 'No se encontró cámara en el dispositivo.';
   }
   if (domErr?.name === 'NotReadableError') {
-    return 'La cámara está siendo usada por otra app. Ciérrala e intenta de nuevo.';
+    return 'La cámara está en uso por otra app. Ciérrala.';
   }
-  return 'No se pudo acceder a la cámara. Verifica permisos del navegador.';
+  return 'No se pudo acceder a la cámara.';
 }
 
 export function useCamera(): UseCameraReturn {
@@ -35,22 +33,23 @@ export function useCamera(): UseCameraReturn {
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [facing, setFacing] = useState<'environment' | 'user'>('environment');
+  const prevFacingRef = useRef<'environment' | 'user'>('environment');
 
   const isSecure = typeof window !== 'undefined'
     ? window.location.protocol === 'https:' || window.location.hostname === 'localhost'
     : false;
-  const hasAPI = typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
 
-  const startCamera = useCallback(async () => {
+  const startCamera = useCallback(async (facingMode: 'environment' | 'user') => {
     try {
       setError(null);
       setReady(false);
 
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: facing },
+          facingMode: { ideal: facingMode },
           width: { ideal: 1280 },
           height: { ideal: 720 },
         },
@@ -58,6 +57,7 @@ export function useCamera(): UseCameraReturn {
       });
 
       streamRef.current = stream;
+      prevFacingRef.current = facingMode;
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -69,22 +69,25 @@ export function useCamera(): UseCameraReturn {
     } catch (err: unknown) {
       setError(getCameraError(err, isSecure));
     }
-  }, [facing, isSecure]);
+  }, [isSecure]);
 
   useEffect(() => {
-    startCamera();
+    startCamera(facing);
     return () => {
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
     };
-  }, [startCamera]);
-
-  const retry = useCallback(() => {
-    startCamera();
-  }, [startCamera]);
-
-  const toggleCamera = useCallback(() => {
-    setFacing((prev) => (prev === 'environment' ? 'user' : 'environment'));
   }, []);
 
-  return { videoRef, canvasRef, error, ready, toggleCamera, retry, isSecure, hasAPI };
+  const toggleCamera = useCallback(async () => {
+    const next = facing === 'environment' ? 'user' : 'environment';
+    setFacing(next);
+    await startCamera(next);
+  }, [facing, startCamera]);
+
+  const retry = useCallback(() => {
+    startCamera(facing);
+  }, [facing, startCamera]);
+
+  return { videoRef, canvasRef, error, ready, toggleCamera, retry };
 }

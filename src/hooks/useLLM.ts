@@ -6,7 +6,7 @@ interface UseLLMReturn {
   explanation: string;
   loading: boolean;
   error: string | null;
-  askQuestion: (text: string) => Promise<void>;
+  askQuestion: (text: string, force?: boolean) => Promise<void>;
   reset: () => void;
 }
 
@@ -24,9 +24,9 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
   }, []);
 
   const askQuestion = useCallback(
-    async (text: string) => {
+    async (text: string, force = false) => {
       const now = Date.now();
-      if (now - lastAskRef.current < minIntervalMs) return;
+      if (!force && now - lastAskRef.current < minIntervalMs) return;
       lastAskRef.current = now;
 
       setLoading(true);
@@ -35,11 +35,17 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
       setExplanation('');
 
       try {
+        const timeoutController = new AbortController();
+        const timeoutId = setTimeout(() => timeoutController.abort(), 15000);
+
         const res = await fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: formatQuestion(text) }),
+          signal: timeoutController.signal,
         });
+
+        clearTimeout(timeoutId);
 
         const data = await res.json();
 
@@ -51,7 +57,11 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
         setAnswer(data.answer);
         setExplanation(data.explanation);
       } catch (err) {
-        setError('No se pudo conectar con el servidor');
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          setError('La consulta tardó demasiado. Reintentá.');
+        } else {
+          setError('No se pudo conectar con el servidor');
+        }
         console.error(err);
       } finally {
         setLoading(false);

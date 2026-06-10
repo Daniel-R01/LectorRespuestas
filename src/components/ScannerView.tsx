@@ -35,17 +35,17 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
       return;
     }
 
-    if (ocrText.length === prev.length && ocrText === prev) return;
+    if (ocrText === prev) return;
 
     const wordChange = Math.abs(ocrText.length - prev.length) > 20
-      || ocrText.split(/\s+/).filter((w) => !prev.includes(w)).length > 5;
+      || ocrText.split(/\s+/).filter((w) => !prev.includes(w)).length > 4;
 
     if (wordChange) {
       const now = Date.now();
       if (now - lastAutoSendRef.current > 8000) {
         lastAutoSendRef.current = now;
         reset();
-        askQuestion(cleanOCRText(ocrText));
+        askQuestion(cleanOCRText(ocrText), false);
       }
     }
 
@@ -56,7 +56,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
     if (!ocrText || llmLoading) return;
     lastAutoSendRef.current = 0;
     reset();
-    askQuestion(cleanOCRText(ocrText));
+    askQuestion(cleanOCRText(ocrText), true);
   };
 
   return (
@@ -89,7 +89,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
                 : !workerReady
                   ? loadingMessage
                   : ocrText
-                    ? ocrText.slice(0, 25)
+                    ? ocrText.slice(0, 30)
                     : 'Esperando texto…'}
             </span>
 
