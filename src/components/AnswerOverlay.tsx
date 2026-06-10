@@ -8,7 +8,7 @@ interface AnswerOverlayProps {
 }
 
 export default function AnswerOverlay({ answer, explanation, loading, error }: AnswerOverlayProps) {
-  if (!answer && !loading && !error) return null;
+  if (!loading && !error && !answer && !explanation) return null;
 
   return (
     <div className={styles.container}>
@@ -34,6 +34,12 @@ export default function AnswerOverlay({ answer, explanation, loading, error }: A
           {explanation && (
             <p className={styles.explanation}>{explanation}</p>
           )}
+        </div>
+      )}
+
+      {!answer && !loading && explanation && (
+        <div className={styles.badge}>
+          <p className={styles.explanation}>{explanation}</p>
         </div>
       )}
     </div>

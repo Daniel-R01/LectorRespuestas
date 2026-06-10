@@ -25,6 +25,36 @@ Ejemplo de formato correcto:
 b
 Un ETF es un fondo cotizado en bolsa que replica un índice.`;
 
+function parseAnswer(raw) {
+  if (!raw) return { answer: '', explanation: '' };
+  const lines = raw.trim().split('\n').filter(Boolean);
+  const firstLine = lines[0]?.trim().toLowerCase() || '';
+
+  for (const line of lines) {
+    const match = line.trim().match(/^([a-d])[.)\s]/i);
+    if (match) {
+      return {
+        answer: match[1].toLowerCase(),
+        explanation: lines.slice(1).join(' ').trim() || line.slice(2).trim(),
+      };
+    }
+  }
+
+  const fullLower = raw.toLowerCase();
+  for (const letter of ['a', 'b', 'c', 'd']) {
+    if (fullLower.includes(`la letra ${letter}`) || fullLower.includes(`opción ${letter}`) || fullLower.includes(`respuesta ${letter}`)) {
+      return { answer: letter, explanation: raw.trim() };
+    }
+  }
+
+  const singleLetter = firstLine.replace(/[^a-d]/g, '');
+  if (singleLetter.length === 1) {
+    return { answer: singleLetter, explanation: lines.slice(1).join(' ').trim() };
+  }
+
+  return { answer: '', explanation: raw.trim() };
+}
+
 app.post('/api/ask', async (req, res) => {
   try {
     const { text } = req.body;
@@ -43,9 +73,9 @@ app.post('/api/ask', async (req, res) => {
       ? msg.content[0].text
       : '';
 
-    const lines = content.trim().split('\n');
-    const answer = lines[0]?.trim().toLowerCase().replace(/[^a-d]/g, '') || '';
-    const explanation = lines.slice(1).join(' ').trim();
+    console.log('Claude raw response:', content);
+
+    const { answer, explanation } = parseAnswer(content);
 
     res.json({ answer, explanation });
   } catch (err) {
