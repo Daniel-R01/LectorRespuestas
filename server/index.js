@@ -18,7 +18,11 @@ if (!apiKey) console.error('ANTHROPIC_API_KEY not set');
 
 const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
-const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Recibiras una imagen de una pantalla con una pregunta de opcion multiple (a, b, c, d, e). Responde UNICAMENTE la letra correcta. Nada mas.`;
+const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Analiza la imagen paso a paso:
+1. Lee la pregunta completa y TODAS las opciones (a,b,c,d,e)
+2. Razona la respuesta correcta
+3. Verifica que ninguna otra opcion sea mejor
+4. Responde UNICAMENTE la letra correcta. Nada mas.`;
 
 function parseAnswer(raw) {
   if (!raw || !raw.trim()) return '';
@@ -61,6 +65,7 @@ app.post('/api/ask', async (req, res) => {
     const msg = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 10,
+      temperature: 0,
       system: SYSTEM_PROMPT,
       messages: [{
         role: 'user',
