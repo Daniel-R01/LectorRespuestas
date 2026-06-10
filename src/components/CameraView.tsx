@@ -27,18 +27,31 @@ export default function CameraView({ videoRef, canvasRef, ready, error, retry, s
     <div className={styles.container}>
       <video
         ref={videoRef}
-        className={styles.video}
+        className={`${styles.video} ${ready ? styles.visible : styles.hidden}`}
         autoPlay
         playsInline
         muted
+        disablePictureInPicture
       />
       <canvas ref={canvasRef} className={styles.canvas} />
 
+      {!ready && !error && (
+        <div className={styles.loadingScreen}>
+          <div className={styles.logo}>
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+              <rect x="8" y="12" width="48" height="40" rx="6" stroke="currentColor" strokeWidth="2.5" fill="none" />
+              <circle cx="32" cy="32" r="10" stroke="currentColor" strokeWidth="2.5" fill="none" />
+              <circle cx="32" cy="32" r="4" fill="currentColor" />
+            </svg>
+          </div>
+          <div className={styles.spinner} />
+          <p className={styles.loadingText}>Permití el acceso a la cámara</p>
+          <p className={styles.loadingSub}>para comenzar a escanear</p>
+        </div>
+      )}
+
       {ready && showScan && (
-        <div
-          className={styles.scanLine}
-          style={{ top: `${scanPos}%` }}
-        />
+        <div className={styles.scanLine} style={{ top: `${scanPos}%` }} />
       )}
 
       {ready && (
@@ -50,15 +63,8 @@ export default function CameraView({ videoRef, canvasRef, ready, error, retry, s
         </>
       )}
 
-      {!ready && !error && (
-        <div className={styles.overlay}>
-          <div className={styles.spinner} />
-          <p>Activando cámara...</p>
-        </div>
-      )}
-
       {error && (
-        <div className={styles.overlay}>
+        <div className={styles.loadingScreen}>
           <p className={styles.error}>{error}</p>
           <button type="button" className={styles.retryBtn} onClick={retry}>
             Reintentar

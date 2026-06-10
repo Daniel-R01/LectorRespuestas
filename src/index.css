@@ -15,5 +15,13 @@ html, body, #root {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-user-modify: read-only;
+  -webkit-touch-callout: none;
   touch-action: manipulation;
+}
+
+input, textarea, [contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-user-modify: read-write;
 }
