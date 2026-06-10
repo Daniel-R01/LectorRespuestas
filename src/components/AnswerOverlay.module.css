@@ -34,11 +34,16 @@
 }
 
 .letter {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 900;
   color: #4ade80;
   text-shadow: 0 0 14px rgba(74, 222, 128, 0.45);
   line-height: 1;
+}
+
+.unknown {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .spinner {

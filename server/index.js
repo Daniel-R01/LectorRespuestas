@@ -21,12 +21,21 @@ const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Recibiras una imagen de una pantalla con una pregunta de opcion multiple (a, b, c, d). Responde UNICAMENTE la letra correcta. Nada mas.`;
 
 function parseAnswer(raw) {
-  if (!raw) return '';
+  if (!raw || !raw.trim()) return '';
   const cleaned = raw.trim().toLowerCase();
+
+  // Try to find isolated letter
   const m = cleaned.match(/\b([a-d])\b/);
   if (m) return m[1];
+
+  // Try to find letter at start of a line
+  const lm = cleaned.match(/^([a-d])[).:\s]/m);
+  if (lm) return lm[1];
+
+  // Just extract any a-d
   const letters = cleaned.replace(/[^a-d]/g, '');
-  if (letters.length === 1) return letters;
+  if (letters.length >= 1) return letters[0];
+
   return '';
 }
 

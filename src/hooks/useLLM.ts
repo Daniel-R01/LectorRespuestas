@@ -25,9 +25,9 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
       if (!force && now - lastAskRef.current < minIntervalMs) return;
       lastAskRef.current = now;
 
-      setLoading(true);
       setError(null);
       setAnswer('');
+      setLoading(true);
 
       try {
         const ctrl = new AbortController();
@@ -48,7 +48,7 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
           return;
         }
 
-        setAnswer(data.answer);
+        setAnswer(data.answer || '?');
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
           setError('Timeout. Reintenta.');
