@@ -98,7 +98,7 @@ app.post('/api/ask', async (req, res) => {
 
   try {
     const msg = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-3-5-haiku-latest',
       max_tokens: 150,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: text }],
