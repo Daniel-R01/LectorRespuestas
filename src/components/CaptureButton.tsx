@@ -15,35 +15,22 @@ export default function CaptureButton({
   autoDetect,
   onSetAuto,
   loading,
-  hasText,
+  hasText: _hasText,
 }: CaptureButtonProps) {
   return (
     <div className={styles.container}>
       <div className={styles.modeGroup}>
-        <button
-          type="button"
-          className={`${styles.modeBtn} ${!autoDetect ? styles.active : ''}`}
-          onClick={() => onSetAuto(false)}
-        >
+        <button type="button" className={`${styles.modeBtn} ${!autoDetect ? styles.active : ''}`} onClick={() => onSetAuto(false)}>
           <span className={styles.modeDot} />
           MANUAL
         </button>
-        <button
-          type="button"
-          className={`${styles.modeBtn} ${autoDetect ? styles.active : ''}`}
-          onClick={() => onSetAuto(true)}
-        >
+        <button type="button" className={`${styles.modeBtn} ${autoDetect ? styles.active : ''}`} onClick={() => onSetAuto(true)}>
           <span className={styles.modeDot} />
           AUTO
         </button>
       </div>
 
-      <button
-        type="button"
-        className={`${styles.captureBtn} ${loading ? styles.loading : ''}`}
-        onClick={onCapture}
-        disabled={loading}
-      >
+      <button type="button" className={`${styles.captureBtn} ${loading ? styles.loading : ''}`} onClick={onCapture} disabled={loading}>
         <div className={styles.ringOuter}>
           <div className={loading ? styles.ringLoading : styles.ringIdle} />
         </div>
@@ -52,17 +39,11 @@ export default function CaptureButton({
       </button>
 
       {onClear ? (
-        <button
-          type="button"
-          className={styles.clearBtn}
-          onClick={onClear}
-        >
+        <button type="button" className={styles.clearBtn} onClick={onClear}>
           Limpiar
         </button>
       ) : (
-        <span className={`${styles.hint} ${hasText ? styles.ready : ''}`}>
-          {loading ? 'Consultando…' : hasText ? 'Capturar' : 'Sin texto'}
-        </span>
+        <div className={styles.clearBtnPlaceholder} />
       )}
     </div>
   );

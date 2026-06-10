@@ -90,6 +90,14 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
   const hasResult = !!(answer || llmError);
   const hasText = !!ocrText;
 
+  const logLine = ocrError
+    ? `⚠ ${ocrError}`
+    : !workerReady
+      ? loadingMessage
+      : ocrText
+        ? ocrText.slice(0, 60)
+        : 'Apunta la cámara a una pregunta…';
+
   return (
     <>
       <CameraView
@@ -115,17 +123,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
             <button type="button" className={styles.stopBtn} onClick={onBack}>
               ✕
             </button>
-
-            <span className={`${styles.status} ${ocrError ? styles.statusErr : ''}`}>
-              {ocrError
-                ? 'OCR: Error'
-                : !workerReady
-                  ? loadingMessage
-                  : ocrText
-                    ? ocrText.slice(0, 30)
-                    : 'Esperando texto…'}
-            </span>
-
+            <div className={styles.spacer} />
             <button type="button" className={styles.flipBtn} onClick={toggleCamera}>
               🔄
             </button>
@@ -143,6 +141,12 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
           {justTried && !hasText && !llmLoading && (
             <div className={styles.toast}>Sin texto detectado. Apunta mejor la cámara.</div>
           )}
+
+          <div className={styles.logBox}>
+            <span className={`${styles.logText} ${ocrError ? styles.logErr : ''}`}>
+              {logLine}
+            </span>
+          </div>
 
           <CaptureButton
             onCapture={handleCapture}

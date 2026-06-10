@@ -6,9 +6,8 @@
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: 10px;
   padding: 12px 16px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 70%, transparent 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
 }
 
 .stopBtn {
@@ -33,27 +32,8 @@
   background: rgba(239,68,68,0.2);
 }
 
-.status {
+.spacer {
   flex: 1;
-  font-size: 11px;
-  color: rgba(255,255,255,0.55);
-  font-family: system-ui, sans-serif;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 8px 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.08);
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
-}
-
-.statusErr {
-  color: #ff6b6b;
-  border-color: rgba(255,107,107,0.2);
 }
 
 .flipBtn {
@@ -74,9 +54,42 @@
   background: rgba(255,255,255,0.15);
 }
 
+.logBox {
+  position: fixed;
+  bottom: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: calc(100% - 32px);
+  width: 320px;
+}
+
+.logText {
+  display: block;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: system-ui, monospace;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logErr {
+  color: #ff6b6b;
+  border-color: rgba(255,107,107,0.2);
+}
+
 .ocrErrorBar {
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: 16px;
   right: 16px;
   z-index: 20;
@@ -112,16 +125,16 @@
 
 .toast {
   position: fixed;
-  bottom: 160px;
+  bottom: 220px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
-  background: rgba(0,0,0,0.8);
+  background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.8);
-  padding: 10px 20px;
-  border-radius: 14px;
-  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 12px;
   font-family: system-ui, sans-serif;
   text-align: center;
   backdrop-filter: blur(12px);
