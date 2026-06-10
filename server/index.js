@@ -44,7 +44,7 @@ function parseAnswer(raw) {
 }
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', hasKey: !!apiKey });
+  res.json({ status: 'ok', hasKey: !!apiKey, model: 'opus-4-8' });
 });
 
 app.post('/api/ask', async (req, res) => {
@@ -63,9 +63,8 @@ app.post('/api/ask', async (req, res) => {
 
   try {
     const msg = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-opus-4-8',
       max_tokens: 10,
-      temperature: 0,
       system: SYSTEM_PROMPT,
       messages: [{
         role: 'user',

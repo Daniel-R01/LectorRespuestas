@@ -130,6 +130,8 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
             onSetAuto={(v) => setAutoDetect(v)}
             loading={llmLoading}
           />
+
+          <span className={styles.watermark}>opus-4-8</span>
         </>
       )}
     </>
