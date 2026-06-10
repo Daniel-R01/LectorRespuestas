@@ -8,7 +8,7 @@
 .video {
   position: absolute;
   inset: 0;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
 }
 
