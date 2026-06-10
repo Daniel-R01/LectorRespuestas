@@ -74,6 +74,8 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
 
   const handleClear = () => {
     reset();
+    prevOcrRef.current = '';
+    lastAutoSendRef.current = 0;
   };
 
   const hasResult = !!(answer || explanation || llmError);
