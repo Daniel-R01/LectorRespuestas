@@ -2,6 +2,7 @@ import styles from './CaptureButton.module.css';
 
 interface CaptureButtonProps {
   onCapture: () => void;
+  onClear?: () => void;
   autoDetect: boolean;
   onToggleAuto: () => void;
   loading: boolean;
@@ -10,6 +11,7 @@ interface CaptureButtonProps {
 
 export default function CaptureButton({
   onCapture,
+  onClear,
   autoDetect,
   onToggleAuto,
   loading,
@@ -39,14 +41,19 @@ export default function CaptureButton({
         {loading && <div className={styles.pulse} />}
       </button>
 
-      <button
-        type="button"
-        className={`${styles.hintBtn} ${hasText ? styles.ready : ''}`}
-        onClick={onCapture}
-        disabled={!hasText || loading}
-      >
-        {loading ? 'Consultando…' : hasText ? 'Capturar' : 'Sin texto'}
-      </button>
+      {onClear ? (
+        <button
+          type="button"
+          className={styles.clearBtn}
+          onClick={onClear}
+        >
+          Limpiar
+        </button>
+      ) : (
+        <span className={`${styles.hint} ${hasText ? styles.ready : ''}`}>
+          {loading ? 'Consultando…' : hasText ? 'Capturar' : 'Sin texto'}
+        </span>
+      )}
     </div>
   );
 }

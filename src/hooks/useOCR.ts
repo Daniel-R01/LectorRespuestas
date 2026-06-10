@@ -6,6 +6,7 @@ interface UseOCRReturn {
   loadingMessage: string;
   workerReady: boolean;
   error: string | null;
+  retryWorker: () => void;
 }
 
 export function useOCR(
@@ -20,43 +21,60 @@ export function useOCR(
   const workerRef = useRef<Tesseract.Worker | null>(null);
   const lastTextRef = useRef('');
   const processingRef = useRef(false);
-  const idRef = useRef(0);
+  const cancelledRef = useRef(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  const initWorker = () => {
+    setWorkerReady(false);
+    setError(null);
+    setLoadingMessage('Cargando OCR...');
+    cancelledRef.current = false;
+
+    workerRef.current?.terminate();
+    workerRef.current = null;
 
     Tesseract.createWorker('spa', 1, {
       logger: (m) => {
-        if (cancelled) return;
+        if (cancelledRef.current) return;
         if (m.status === 'loading tesseract core') {
           setLoadingMessage('Cargando motor OCR...');
         } else if (m.status === 'initializing tesseract') {
           setLoadingMessage('Inicializando...');
         } else if (m.status === 'loading language traineddata') {
-          setLoadingMessage('Cargando español...');
-        } else if (m.status === 'recognizing text') {
-          // progress during recognition, ignore
+          setLoadingMessage('Cargando español... (' + Math.round((m.progress || 0) * 100) + '%)');
         }
       },
     })
       .then((worker) => {
-        if (cancelled) { worker.terminate(); return; }
+        if (cancelledRef.current) { worker.terminate(); return; }
         workerRef.current = worker;
         setWorkerReady(true);
       })
       .catch((err) => {
-        if (!cancelled) {
+        if (cancelledRef.current) return;
+        const msg = err?.message || String(err);
+        if (msg.includes('NetworkError') || msg.includes('fetch')) {
+          setError('Error de conexión. Verifica tu internet.');
+        } else if (msg.includes('aborted')) {
+          setError('Descarga cancelada.');
+        } else {
           setError('Error al inicializar OCR');
-          console.error('Tesseract init error:', err);
         }
+        console.error('Tesseract init error:', err);
       });
+  };
 
+  useEffect(() => {
+    initWorker();
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
       workerRef.current?.terminate();
       workerRef.current = null;
     };
   }, []);
+
+  const retryWorker = () => {
+    initWorker();
+  };
 
   useEffect(() => {
     if (!workerReady) return;
@@ -73,7 +91,6 @@ export function useOCR(
       if (!vw || !vh) return;
 
       processingRef.current = true;
-      idRef.current++;
 
       try {
         const ctx = canvas.getContext('2d');
@@ -101,5 +118,5 @@ export function useOCR(
     return () => clearInterval(id);
   }, [canvasRef, videoRef, workerReady, intervalMs]);
 
-  return { text, loadingMessage, workerReady, error };
+  return { text, loadingMessage, workerReady, error, retryWorker };
 }

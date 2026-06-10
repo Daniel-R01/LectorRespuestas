@@ -19,12 +19,21 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
     workerReady,
     loadingMessage,
     error: ocrError,
+    retryWorker,
   } = useOCR(canvasRef, videoRef, 1000);
   const { answer, explanation, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
 
   const [autoDetect, setAutoDetect] = useState(true);
+  const [justTried, setJustTried] = useState(false);
   const prevOcrRef = useRef('');
   const lastAutoSendRef = useRef(0);
+
+  useEffect(() => {
+    if (justTried) {
+      const t = setTimeout(() => setJustTried(false), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [justTried]);
 
   useEffect(() => {
     if (!autoDetect || !ocrText || llmLoading || !workerReady) return;
@@ -53,11 +62,22 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
   }, [ocrText, autoDetect, llmLoading, workerReady, askQuestion, reset]);
 
   const handleCapture = () => {
-    if (!ocrText || llmLoading) return;
+    if (!ocrText) {
+      setJustTried(true);
+      return;
+    }
+    if (llmLoading) return;
     lastAutoSendRef.current = 0;
     reset();
     askQuestion(cleanOCRText(ocrText), true);
   };
+
+  const handleClear = () => {
+    reset();
+  };
+
+  const hasResult = !!(answer || explanation || llmError);
+  const hasText = !!ocrText;
 
   return (
     <>
@@ -85,7 +105,7 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
 
             <span className={`${styles.status} ${ocrError ? styles.statusErr : ''}`}>
               {ocrError
-                ? `OCR: ${ocrError}`
+                ? 'OCR: Error'
                 : !workerReady
                   ? loadingMessage
                   : ocrText
@@ -98,12 +118,26 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
             </button>
           </div>
 
+          {ocrError && (
+            <div className={styles.ocrErrorBar}>
+              <span>{ocrError}</span>
+              <button type="button" className={styles.ocrRetryBtn} onClick={retryWorker}>
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {justTried && !hasText && !llmLoading && (
+            <div className={styles.toast}>Sin texto detectado. Apunta mejor la cámara.</div>
+          )}
+
           <CaptureButton
             onCapture={handleCapture}
+            onClear={hasResult ? handleClear : undefined}
             autoDetect={autoDetect}
             onToggleAuto={() => setAutoDetect((v) => !v)}
             loading={llmLoading}
-            hasText={!!ocrText}
+            hasText={hasText}
           />
         </>
       )}
