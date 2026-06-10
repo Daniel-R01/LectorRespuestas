@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useCamera } from '../hooks/useCamera';
 import { useOCR } from '../hooks/useOCR';
 import { useLLM } from '../hooks/useLLM';
-import { extractQuestion, textSimilarity } from '../utils/parser';
+import { cleanOCRText } from '../utils/parser';
 import CameraView from './CameraView';
 import AnswerOverlay from './AnswerOverlay';
 import CaptureButton from './CaptureButton';
@@ -13,14 +13,20 @@ interface ScannerViewProps {
 
 export default function ScannerView({ onBack }: ScannerViewProps) {
   const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry } = useCamera();
-  const { text: ocrText, workerReady, loadingMessage } = useOCR(canvasRef, videoRef, 1000);
-  const { answer, explanation, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(8000);
+  const {
+    text: ocrText,
+    workerReady,
+    loadingMessage,
+    error: ocrError,
+  } = useOCR(canvasRef, videoRef, 1000);
+  const { answer, explanation, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(6000);
 
   const [autoDetect, setAutoDetect] = useState(true);
   const prevOcrRef = useRef('');
+  const lastAutoSendRef = useRef(0);
 
   useEffect(() => {
-    if (!autoDetect || !ocrText || llmLoading) return;
+    if (!autoDetect || !ocrText || llmLoading || !workerReady) return;
 
     const prev = prevOcrRef.current;
     if (!prev) {
@@ -28,29 +34,37 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
       return;
     }
 
-    const similarity = textSimilarity(ocrText, prev);
-    if (similarity < 0.5) {
-      const question = extractQuestion(ocrText);
-      if (question) {
+    if (ocrText.length === prev.length && ocrText === prev) return;
+
+    const wordChange = Math.abs(ocrText.length - prev.length) > 20
+      || ocrText.split(/\s+/).filter((w) => !prev.includes(w)).length > 5;
+
+    if (wordChange) {
+      const now = Date.now();
+      if (now - lastAutoSendRef.current > 8000) {
+        lastAutoSendRef.current = now;
         reset();
-        askQuestion(question);
+        askQuestion(cleanOCRText(ocrText));
       }
     }
 
     prevOcrRef.current = ocrText;
-  }, [ocrText, autoDetect, llmLoading, askQuestion, reset]);
+  }, [ocrText, autoDetect, llmLoading, workerReady, askQuestion, reset]);
 
   const handleCapture = () => {
-    const question = extractQuestion(ocrText);
-    if (question) {
-      reset();
-      askQuestion(question);
-    }
+    if (!ocrText || llmLoading) return;
+    lastAutoSendRef.current = 0;
+    reset();
+    askQuestion(cleanOCRText(ocrText));
   };
 
-  const ocrStatus = workerReady
-    ? `OCR activo${ocrText ? ' - texto detectado' : ''}`
-    : loadingMessage;
+  const ocrStatus = ocrError
+    ? `OCR: ${ocrError}`
+    : !workerReady
+      ? loadingMessage
+      : ocrText
+        ? `Texto: ${ocrText.slice(0, 30)}…`
+        : 'OCR activo - esperando';
 
   return (
     <>
@@ -77,12 +91,16 @@ export default function ScannerView({ onBack }: ScannerViewProps) {
               top: 8,
               right: 12,
               zIndex: 20,
-              fontSize: 11,
-              color: 'rgba(255,255,255,0.5)',
+              fontSize: 10,
+              color: ocrError ? '#ff6b6b' : 'rgba(255,255,255,0.6)',
               fontFamily: 'system-ui',
-              background: 'rgba(0,0,0,0.5)',
+              background: 'rgba(0,0,0,0.65)',
               padding: '4px 10px',
               borderRadius: 12,
+              maxWidth: '60%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           >
             {ocrStatus}
