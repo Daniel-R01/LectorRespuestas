@@ -1,10 +1,28 @@
+import { useState, useEffect } from 'react';
 import styles from './StartScreen.module.css';
 
+interface Profile {
+  name: string;
+  content: string;
+}
+
 interface StartScreenProps {
-  onStart: () => void;
+  onStart: (profileContent: string | null) => void;
 }
 
 export default function StartScreen({ onStart }: StartScreenProps) {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [selected, setSelected] = useState('');
+
+  useEffect(() => {
+    fetch('/api/profiles')
+      .then(r => r.json())
+      .then(setProfiles)
+      .catch(() => {});
+  }, []);
+
+  const selectedProfile = profiles.find(p => p.name === selected)?.content ?? null;
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -36,7 +54,20 @@ export default function StartScreen({ onStart }: StartScreenProps) {
           </div>
         </div>
 
-        <button type="button" className={styles.button} onClick={onStart}>
+        {profiles.length > 0 && (
+          <select
+            className={styles.select}
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+          >
+            <option value="">Sin perfil de empresa</option>
+            {profiles.map(p => (
+              <option key={p.name} value={p.name}>{p.name.toUpperCase()}</option>
+            ))}
+          </select>
+        )}
+
+        <button type="button" className={styles.button} onClick={() => onStart(selectedProfile)}>
           Comenzar
         </button>
 

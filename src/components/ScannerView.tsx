@@ -8,11 +8,12 @@ import styles from './ScannerView.module.css';
 
 interface ScannerViewProps {
   onBack: () => void;
+  profileContent?: string | null;
 }
 
-export default function ScannerView({ onBack }: ScannerViewProps) {
+export default function ScannerView({ onBack, profileContent }: ScannerViewProps) {
   const { videoRef, canvasRef, ready, error: cameraError, toggleCamera, retry, captureFrame } = useCamera();
-  const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(3500);
+  const { answer, loading: llmLoading, error: llmError, askQuestion, reset } = useLLM(3500, profileContent);
 
   const [autoDetect, setAutoDetect] = useState(false);
   const [flash, setFlash] = useState(false);

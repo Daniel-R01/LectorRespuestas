@@ -4,6 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import Anthropic from '@anthropic-ai/sdk';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -47,25 +48,39 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', hasKey: !!apiKey, model: 'opus-4-8' });
 });
 
+app.get('/api/profiles', (_req, res) => {
+  const dir = path.join(__dirname, '..', 'profiles');
+  if (!fs.existsSync(dir)) return res.json([]);
+  const files = fs.readdirSync(dir).filter(f => f.endsWith('.md'));
+  const profiles = files.map(f => ({
+    name: f.replace('.md', ''),
+    content: fs.readFileSync(path.join(dir, f), 'utf-8'),
+  }));
+  res.json(profiles);
+});
+
 app.post('/api/ask', async (req, res) => {
   if (!apiKey) {
     return res.status(500).json({ error: 'API key no configurada. Agregala en Render.' });
   }
 
-  const { image } = req.body;
+  const { image, profile } = req.body;
   if (!image || typeof image !== 'string' || !image.startsWith('data:')) {
     return res.status(400).json({ error: 'Imagen invalida o faltante.' });
   }
 
-  // Extract base64 and media type
   const [header, data] = image.split(',');
   const mediaType = header.match(/data:(.*);base64/)?.[1] || 'image/jpeg';
+
+  const systemPrompt = profile
+    ? `${SYSTEM_PROMPT}\n\nSi la pregunta es sobre la empresa del siguiente perfil, usa estos datos verificados (NO los inventes). Si NO es sobre esta empresa, ignora esta seccion:\n\n${profile}`
+    : SYSTEM_PROMPT;
 
   try {
     const msg = await anthropic.messages.create({
       model: 'claude-opus-4-8',
       max_tokens: 10,
-      system: SYSTEM_PROMPT,
+      system: systemPrompt,
       messages: [{
         role: 'user',
         content: [

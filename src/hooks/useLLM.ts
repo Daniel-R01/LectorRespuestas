@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 interface UseLLMReturn {
   answer: string;
@@ -8,7 +8,13 @@ interface UseLLMReturn {
   reset: () => void;
 }
 
-export function useLLM(minIntervalMs = 6000): UseLLMReturn {
+export function useLLM(minIntervalMs = 6000, profileContent?: string | null): UseLLMReturn {
+  const profileRef = useRef(profileContent);
+
+  useEffect(() => {
+    profileRef.current = profileContent;
+  }, [profileContent]);
+
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +42,7 @@ export function useLLM(minIntervalMs = 6000): UseLLMReturn {
         const res = await fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: imageBase64 }),
+          body: JSON.stringify({ image: imageBase64, profile: profileRef.current || undefined }),
           signal: ctrl.signal,
         });
 
