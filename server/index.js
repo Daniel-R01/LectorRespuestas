@@ -20,14 +20,18 @@ if (!apiKey) console.error('ANTHROPIC_API_KEY not set');
 const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
 const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Analiza la imagen paso a paso:
-1. Lee la pregunta completa y TODAS las opciones (a,b,c,d,e)
-2. Razona la respuesta correcta
-3. Verifica que ninguna otra opcion sea mejor
-4. Responde UNICAMENTE la letra correcta. Nada mas.`;
+1. Determina si la imagen contiene una pregunta de opcion multiple con alternativas (a,b,c,d,e)
+2. Si NO hay una pregunta con alternativas visibles, responde EXACTAMENTE "NO_PREGUNTA"
+3. Si SI hay una pregunta, lee la pregunta completa y TODAS las opciones
+4. Razona cual es la respuesta correcta
+5. Verifica que ninguna otra opcion sea mejor
+6. Responde UNICAMENTE la letra correcta (a,b,c,d o e). Nada mas.`;
 
 function parseAnswer(raw) {
   if (!raw || !raw.trim()) return '';
   const cleaned = raw.trim().toLowerCase();
+
+  if (cleaned.includes('no_pregunta')) return '';
 
   // Try to find isolated letter
   const m = cleaned.match(/\b([a-e])\b/);

@@ -54,7 +54,7 @@ export function useLLM(minIntervalMs = 6000, profileContent?: string | null): Us
           return;
         }
 
-        setAnswer(data.answer || '?');
+        setAnswer(data.answer || '');
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
           setError('Timeout. Reintenta.');
