@@ -19,13 +19,13 @@ if (!apiKey) console.error('ANTHROPIC_API_KEY not set');
 
 const anthropic = new Anthropic({ apiKey: apiKey || 'missing' });
 
-const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Analiza la imagen paso a paso:
-1. Determina si la imagen contiene una pregunta de opcion multiple con alternativas (a,b,c,d,e)
-2. Si NO hay una pregunta con alternativas visibles, responde EXACTAMENTE "NO_PREGUNTA"
-3. Si SI hay una pregunta, lee la pregunta completa y TODAS las opciones
-4. Razona cual es la respuesta correcta
-5. Verifica que ninguna otra opcion sea mejor
-6. Responde UNICAMENTE la letra correcta (a,b,c,d o e). Nada mas.`;
+const SYSTEM_PROMPT = `Eres un experto en finanzas e inversiones. Analiza la pregunta y opciones, luego responde EXCLUSIVAMENTE con la letra de la respuesta correcta. Reglas estrictas:
+
+- Si NO hay una pregunta con alternativas (a,b,c,d,e) visibles, responde "NO_PREGUNTA"
+- Si SI hay pregunta, razona internamente pero NO expliques tu razonamiento
+- Responde SOLO la letra (a, b, c, d o e), sin texto, sin puntuacion, sin saltos de linea
+- Ejemplo: si la opcion b es correcta, responde unicamente: b
+- NO digas "La respuesta es...", NO escribas analisis, SOLO la letra`;
 
 function parseAnswer(raw) {
   if (!raw || !raw.trim()) return '';
@@ -33,17 +33,31 @@ function parseAnswer(raw) {
 
   if (cleaned.includes('no_pregunta')) return '';
 
-  // Try to find isolated letter
-  const m = cleaned.match(/\b([a-e])\b/);
-  if (m) return m[1];
+  // 1. Respuesta ideal: solo la letra con puntuacion opcional
+  const single = /^\s*([a-e])\s*[).]*\s*$/.exec(cleaned);
+  if (single) return single[1];
 
-  // Try to find letter at start of a line with delimiter
-  const lm = cleaned.match(/^([a-e])[).:\s]/m);
+  // 2. Patrones explicitos de respuesta ("correcta es X", "respuesta: X")
+  //    Preferir la ultima coincidencia
+  const indicators = /(?:respuesta|opci[oó]n|correcta|letra)\b[^a-e]*?\b([a-e])\b/gi;
+  let best = null;
+  let m;
+  while ((m = indicators.exec(cleaned)) !== null) {
+    best = m[1];
+  }
+  if (best) return best;
+
+  // 3. Ultima letra a-e aislada (evita falsos positivos de "a" como preposicion)
+  const allLetters = [...cleaned.matchAll(/\b([a-e])\b/g)];
+  if (allLetters.length > 0) return allLetters[allLetters.length - 1][1];
+
+  // 4. Letra al inicio de linea con delimitador
+  const lm = /^([a-e])[).:\s]/m.exec(cleaned);
   if (lm) return lm[1];
 
-  // Just extract any a-e
+  // 5. Ultimo caracter a-e como ultimo recurso
   const letters = cleaned.replace(/[^a-e]/g, '');
-  if (letters.length >= 1) return letters[0];
+  if (letters.length >= 1) return letters[letters.length - 1];
 
   return '';
 }
