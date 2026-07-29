@@ -2,7 +2,7 @@
 
 - Meta Platforms es una de las mayores compañías de internet y publicidad digital del mundo. Opera Facebook, Instagram, Messenger, WhatsApp, Threads y Meta AI, y desarrolla dispositivos y plataformas de realidad virtual, realidad aumentada y gafas de inteligencia artificial mediante Reality Labs. En 2025 obtuvo ingresos récord de **US$200,97 mil millones**, utilidad neta de **US$60,46 mil millones**, margen bruto calculado de **82,0%** y margen operativo de **41,4%**. La publicidad aportó **97,6%** de los ingresos.
 
-> **Fecha de actualización:** 28 de julio de 2026. Meta cierra su ejercicio fiscal el 31 de diciembre. El último trimestre publicado al corte es el primero de 2026, terminado el 31 de marzo; los resultados del segundo trimestre se publicarán el 29 de julio de 2026 y, por tanto, no se presentan aquí como cifras realizadas.
+> **Fecha de actualización:** 29 de julio de 2026, después de la publicación de resultados. Meta cierra su ejercicio fiscal el 31 de diciembre. El último trimestre publicado al corte es el segundo de 2026, terminado el 30 de junio; el Formulario 10-Q correspondiente aún no se había presentado al momento de esta actualización.
 
 ## Datos generales
 
@@ -19,7 +19,7 @@
 - **Director independiente principal:** Robert M. Kimmitt
 - **Otros ejecutivos relevantes:** Javier Olivan, COO; Susan Li, CFO; Chris Cox, Chief Product Officer; Andrew Bosworth, CTO; y C.J. Mahoney, Chief Legal Officer
 - **Sede:** 1 Meta Way, Menlo Park, California 94025, Estados Unidos
-- **Empleados:** 77.986 al 31 de marzo de 2026, 1% más que un año antes
+- **Empleados:** 75.472 al 30 de junio de 2026, 1% menos que un año antes; la cifra todavía incluía aproximadamente 8.000 empleados afectados por la reducción de mayo
 - **Salida a bolsa:** 18 de mayo de 2012, a US$38 por acción y bajo el símbolo FB
 - **Cambio del símbolo a META:** 9 de junio de 2022
 - **Página oficial:** [meta.com](https://www.meta.com/)
@@ -137,22 +137,22 @@ La recuperación desde 2022 refleja el repunte publicitario, mejoras de eficienc
 
 Durante 2025, las impresiones publicitarias aumentaron 12% y el precio promedio por anuncio subió 9%. El crecimiento se dio en todas las regiones, aunque productos como Reels y ciertos mercados emergentes todavía monetizan a tasas inferiores a Feed y Stories.
 
-## Balance y liquidez al 31 de marzo de 2026
+## Balance y liquidez al 30 de junio de 2026
 
-- **Efectivo y equivalentes:** US$23,43 B
-- **Valores negociables:** US$57,75 B
-- **Efectivo, equivalentes y valores negociables:** US$81,18 B
-- **Efectivo y equivalentes restringidos:** US$7,68 B, no incluidos en la cifra anterior
-- **Inversiones no negociables:** US$28,41 B
-- **Propiedad y equipo netos:** US$194,78 B
-- **Deuda de largo plazo registrada:** US$58,75 B
-- **Caja y valores menos deuda registrada:** Aproximadamente US$22,43 B
-- **Activos totales:** US$395,25 B
-- **Pasivos totales:** US$151,57 B
-- **Patrimonio de accionistas:** US$243,68 B
+- **Efectivo y equivalentes:** US$15,46 B
+- **Valores negociables:** US$74,80 B
+- **Efectivo, equivalentes y valores negociables:** US$90,26 B
+- **Efectivo y equivalentes restringidos:** US$13,81 B, no incluidos en la cifra anterior
+- **Inversiones no negociables:** US$30,16 B
+- **Propiedad y equipo netos:** US$225,72 B
+- **Deuda de largo plazo registrada:** US$83,66 B
+- **Caja y valores menos deuda registrada:** Aproximadamente US$6,60 B
+- **Activos totales:** US$449,96 B
+- **Pasivos totales:** US$188,74 B
+- **Patrimonio de accionistas:** US$261,22 B
 - **Acciones en circulación al 24 de abril de 2026:** 2.196.045.588 Clase A y 342.377.716 Clase B; aproximadamente 2.538 millones en total
 
-El 4 de mayo de 2026, después de la fecha de ese balance, Meta emitió **US$25 B** de deuda con vencimientos entre 2031 y 2066 y obtuvo aproximadamente US$24,9 B netos. El prospecto mostró deuda pro forma de aproximadamente **US$83,75 B** y caja más valores de **US$106,05 B** a 31 de marzo. Estas cifras son pro forma: no sustituyen un balance posterior reportado.
+El balance de junio ya incorpora la emisión de **US$25 B** de deuda del 4 de mayo, que produjo aproximadamente US$24,91 B netos. Aun con esos recursos, la diferencia entre caja más valores y deuda bajó a cerca de US$6,60 B porque el gasto de infraestructura y otras salidas de efectivo fueron elevados. La caja restringida no se incluye en ese cálculo.
 
 ## Flujo de caja y retorno al accionista en 2025
 
@@ -171,18 +171,18 @@ El flujo operativo creció 26,8%, pero el flujo libre disminuyó 16,3% porque el
 
 ## Métricas bursátiles actuales
 
-**Precio del último cierre completo disponible, 27 de julio de 2026. Las métricas cambian con el mercado.** La capitalización combina ese precio con el último número exacto de acciones disponible, fechado el 24 de abril.
+**Precio del cierre regular del 29 de julio de 2026. Las métricas cambian con el mercado.** La capitalización combina ese precio con el último número exacto de acciones disponible, fechado el 24 de abril. Después del reporte, la acción cotizaba alrededor de US$560,85 en operaciones posteriores al cierre, una caída aproximada de 4,2%; ese precio era indicativo y no un cierre oficial.
 
-- **Precio de la acción Clase A:** Aproximadamente US$593,87
-- **Capitalización bursátil calculada:** Aproximadamente US$1,51 billones estadounidenses (*trillion* en inglés)
-- **EPS diluido aproximado de los últimos 12 meses (TTM), calculado:** US$27,50
-- **P/E TTM calculado:** Aproximadamente 21,6 veces
-- **Ingresos TTM calculados:** Aproximadamente US$214,96 B
-- **Utilidad neta TTM calculada:** Aproximadamente US$70,59 B
+- **Precio de la acción Clase A al cierre regular:** US$585,61
+- **Capitalización bursátil calculada:** Aproximadamente US$1,49 billones estadounidenses (*trillion* en inglés)
+- **EPS diluido aproximado de los últimos 12 meses (TTM), calculado:** US$26,54
+- **P/E TTM calculado:** Aproximadamente 22,1 veces
+- **Ingresos TTM calculados:** Aproximadamente US$228,25 B
+- **Utilidad neta TTM calculada:** Aproximadamente US$68,10 B
 - **Dividendo trimestral vigente:** US$0,525 por acción
-- **Dividendo anualizado y rendimiento aproximado:** US$2,10 y 0,35%
+- **Dividendo anualizado y rendimiento aproximado:** US$2,10 y 0,36%
 
-El EPS TTM aproxima US$23,49 − US$6,43 + US$10,44 usando EPS diluidos GAAP reportados. Como esos periodos tienen promedios ponderados de acciones distintos y las cifras están redondeadas, no es una métrica GAAP publicada por Meta. Tanto el EPS como el P/E están distorsionados por el cargo fiscal extraordinario de 2025 y el beneficio fiscal extraordinario de Q1 2026; no deben interpretarse como una medida limpia del desempeño operativo.
+El EPS TTM aproxima US$23,49 − US$6,43 − US$7,14 + US$10,44 + US$6,18 usando EPS diluidos GAAP reportados. Como esos periodos tienen promedios ponderados de acciones distintos y las cifras están redondeadas, no es una métrica GAAP publicada por Meta. Tanto el EPS como el P/E están distorsionados por el cargo fiscal extraordinario de 2025 y el beneficio fiscal extraordinario de Q1 2026; no deben interpretarse como una medida limpia del desempeño operativo.
 
 ## Resultados recientes del ejercicio fiscal 2026
 
@@ -215,22 +215,47 @@ En la llamada de resultados, la dirección también afirmó que más de ocho mil
 
 La utilidad neta incluyó un beneficio fiscal discreto de **US$8,03 B** por nueva orientación del Tesoro estadounidense sobre el impuesto mínimo corporativo. Meta indicó que, sin ese beneficio, el EPS habría sido US$3,13 menor: aproximadamente **US$7,31**. La utilidad neta excluyendo únicamente ese beneficio sería unos US$18,74 B; es un cálculo aritmético ilustrativo y no una métrica publicada por la compañía.
 
-### Guía vigente y segundo trimestre pendiente
+### Segundo trimestre de 2026
 
-Guía publicada el 29 de abril de 2026:
+Periodo finalizado el 30 de junio de 2026:
 
-- **Ingresos Q2 2026:** US$58 B–US$61 B, con un viento de cola cambiario estimado de dos puntos porcentuales.
-- **Gastos totales 2026:** US$162 B–US$169 B.
-- **Capex 2026:** US$125 B–US$145 B, frente a la guía anterior de US$115 B–US$135 B.
-- **Utilidad operativa 2026:** La dirección esperaba superar los US$83,28 B de 2025.
-- **Tasa fiscal para los trimestres restantes:** 13%–16%, si no cambia el entorno fiscal.
-- **Reality Labs:** Meta reiteró en abril que esperaba una pérdida operativa anual similar a la de 2025.
+- **Ingresos:** US$60,80 B, +28%; +27% a moneda constante
+- **Ingresos publicitarios:** US$59,36 B, +27% y 97,6% del total
+- **Costos y gastos:** US$42,03 B, +55%
+- **Utilidad operativa:** US$18,78 B, −8%
+- **Margen operativo:** 31%, frente a 43% un año antes
+- **Utilidad neta:** US$15,85 B, −14%
+- **EPS diluido:** US$6,18, −13%
+- **Personas activas diarias de la familia (Family DAP):** 3.600 millones en promedio durante junio, +3%
+- **Impresiones publicitarias:** +14%
+- **Precio promedio por anuncio:** +12%
+- **Flujo de efectivo operativo:** US$31,86 B
+- **Capex, incluidos arrendamientos financieros:** US$31,08 B
+- **Flujo de caja libre:** US$784 M, frente a US$8,55 B un año antes
+- **Dividendos y equivalentes pagados:** US$1,35 B
+- **Recompras:** Ninguna durante Q2
+- **Empleados:** 75.472, −1%; la cifra incluía cerca de 8.000 puestos afectados por la reducción de mayo
 
-El rango de capex implica un aumento aproximado de **73% a 101%** frente a 2025. Todas estas cifras son estimaciones de la dirección, no resultados realizados. Meta anunció que publicará Q2 el **29 de julio de 2026 después del cierre del mercado**.
+Family of Apps generó US$60,37 B de ingresos y US$23,39 B de utilidad operativa, un margen segmentario calculado de 38,8%. Reality Labs generó US$431 M y perdió US$4,62 B. La utilidad operativa consolidada cayó pese al fuerte crecimiento de ventas porque los gastos subieron con mayor rapidez; el trimestre incluyó **US$2,40 B de cargos relacionados con procesos legales** y **US$1,18 B de indemnizaciones** por la reducción de personal de mayo.
+
+En el primer semestre, los ingresos fueron US$117,11 B (+30%), la utilidad operativa US$41,65 B (+10%), la utilidad neta US$42,62 B (+22%) y el flujo de caja libre US$13,17 B (−30%). El capex semestral, incluidos los pagos de principal de arrendamientos financieros, alcanzó US$50,92 B, aproximadamente 66% más que un año antes.
+
+### Guía vigente
+
+Guía publicada el 29 de julio de 2026:
+
+- **Ingresos Q3 2026:** US$61 B–US$64 B; la hipótesis cambiaria representa un viento en contra aproximado de un punto porcentual para el crecimiento interanual.
+- **Gastos totales 2026:** US$165 B–US$169 B; Meta elevó el extremo inferior para incorporar los US$2,40 B de cargos legales de Q2.
+- **Capex 2026:** US$130 B–US$145 B, rango acotado desde US$125 B–US$145 B.
+- **Utilidad operativa 2026:** La dirección continúa esperando superar los US$83,28 B de 2025.
+- **Tasa fiscal para los trimestres restantes:** 15%–17%, frente a la estimación anterior de 13%–16%, si no cambia el entorno fiscal.
+- **Riesgo legal:** Meta advirtió que los procesos activos, incluidos juicios estadounidenses relacionados con jóvenes, podrían producir pérdidas materiales.
+
+El nuevo rango de capex implica un aumento aproximado de **80% a 101%** frente a 2025. Todas estas cifras son estimaciones de la dirección, no resultados realizados.
 
 ## Investigación y desarrollo
 
-Meta invirtió **US$57,37 B** en investigación y desarrollo durante 2025, 31% más que en 2024 y equivalente a 28,5% de los ingresos. En Q1 2026 el gasto fue **US$17,70 B**, 46% más interanual. Los principales componentes son compensación de equipos técnicos, infraestructura, modelos de IA, sistemas de recomendación y publicidad, Reality Labs, silicio propio, seguridad e integridad.
+Meta invirtió **US$57,37 B** en investigación y desarrollo durante 2025, 31% más que en 2024 y equivalente a 28,5% de los ingresos. En Q2 2026 el gasto fue **US$21,66 B**, 67% más interanual; en el primer semestre acumuló **US$39,35 B**, 57% más. Los principales componentes son compensación de equipos técnicos, infraestructura, modelos de IA, sistemas de recomendación y publicidad, Reality Labs, silicio propio, seguridad e integridad.
 
 En 2026, la empresa presentó Muse Spark como el primer modelo de Meta Superintelligence Labs, Muse Image para generación y edición visual, y nuevas capacidades de Meta AI para planificar y ejecutar tareas. Estos anuncios muestran el ritmo de desarrollo, pero no prueban por sí solos adopción duradera ni retorno económico.
 
@@ -242,7 +267,7 @@ Meta diseña y opera una parte importante de su infraestructura, pero también d
 
 - Al cierre de 2025 poseía **30 ubicaciones de centros de datos** y arrendaba capacidad en sitios seleccionados.
 - Tenía oficinas en más de 90 ciudades.
-- La partida de propiedad y equipo netos alcanzó US$194,78 B al 31 de marzo de 2026, US$18,38 B más que tres meses antes.
+- La partida de propiedad y equipo netos alcanzó US$225,72 B al 30 de junio de 2026, US$49,32 B más que al cierre de 2025.
 - Los compromisos contractuales no cancelables eran aproximadamente US$237,67 B al 31 de marzo, unos US$106,62 B más que al cierre de 2025; los arrendamientos aún no iniciados sumaban cerca de US$182,88 B. Estas categorías no deben sumarse automáticamente porque pueden tener alcances contables distintos.
 - Además existían obligaciones contingentes para comprar hasta US$14,72 B de capacidad de nube durante cinco años, reducibles si el proveedor vende esa capacidad a terceros.
 - En abril se celebraron contratos adicionales que elevaron los compromisos no cancelables en aproximadamente US$24 B.
@@ -273,7 +298,7 @@ La competencia se basa en utilidad del producto, participación, tamaño de la r
 
 ## Ventajas competitivas
 
-- **Escala de red:** Meta estimó 3.560 millones de personas activas diariamente en la familia de aplicaciones en marzo de 2026.
+- **Escala de red:** Meta estimó 3.600 millones de personas activas diariamente en la familia de aplicaciones en junio de 2026.
 - **Distribución multiproducto:** Facebook, Instagram, WhatsApp y Messenger permiten lanzar y escalar funciones sin empezar desde cero.
 - **Liquidez publicitaria:** Millones de anunciantes, amplio inventario y herramientas de autoservicio crean una plataforma global de oferta y demanda.
 - **Tecnología de recomendación y anuncios:** La IA mejora descubrimiento, creatividades, medición, segmentación y conversiones.
@@ -291,7 +316,7 @@ Estas ventajas no impiden el uso simultáneo de varias plataformas por usuarios,
 - **Dependencia de publicidad:** 97,6% de los ingresos de 2025 provino de anuncios.
 - **Cambio de mezcla:** Reels, video, mensajería y mercados emergentes pueden crecer más rápido, pero monetizan a tasas inferiores a Feed, Stories y mercados maduros.
 - **Apple y Google:** Cambios en privacidad, identificadores, tiendas, interoperabilidad o distribución pueden reducir datos, medición, alcance o monetización.
-- **Retorno de la inversión en IA:** El capex guiado de US$125 B–US$145 B y los compromisos multianuales pueden preceder durante años a beneficios demostrables.
+- **Retorno de la inversión en IA:** El capex guiado de US$130 B–US$145 B y los compromisos multianuales pueden preceder durante años a beneficios demostrables.
 - **Reality Labs:** Perdió US$19,19 B en 2025, enfrenta demanda incierta y requiere inversión prolongada en categorías donde Meta tiene menos experiencia.
 - **Competencia y relevancia:** TikTok, YouTube y nuevos productos de IA pueden desplazar tiempo de uso, especialmente entre públicos jóvenes.
 - **Privacidad, contenido y seguridad juvenil:** La moderación, el diseño de producto, la protección de menores, la desinformación y el contenido generado por IA generan riesgo legal y reputacional.
@@ -337,16 +362,17 @@ Estas ventajas no impiden el uso simultáneo de varias plataformas por usuarios,
 - **30 de junio y 10 de julio de 2026:** Nuevos hitos en litigios estadounidenses de seguridad juvenil y en la revisión preliminar de la DSA europea.
 - **7 y 24 de julio de 2026:** Presentación de Muse Image y nuevas capacidades de Meta AI para planificar y ejecutar tareas.
 - **28 de julio de 2026:** Anuncio de la empresa conjunta con BlackRock para el campus de datos de El Paso; el cierre seguía pendiente.
+- **29 de julio de 2026:** Q2 2026: ingresos +28% a US$60,80 B, DAP de 3.600 millones y margen operativo de 31%; la guía de capex se acotó a US$130 B–US$145 B.
 
-## Situación actual al 28 de julio de 2026
+## Situación actual al 29 de julio de 2026
 
-El negocio principal llega al segundo semestre con fuerte impulso: en Q1 los ingresos aumentaron 33%, las impresiones 19%, el precio medio por anuncio 12% y Family of Apps produjo US$26,90 B de utilidad operativa. Meta mantiene una escala difícil de replicar y continúa usando IA para mejorar recomendación y rendimiento publicitario.
+El negocio principal llega al segundo semestre con fuerte crecimiento: en Q2 los ingresos aumentaron 28%, las impresiones 14%, el precio medio por anuncio 12% y Family of Apps produjo US$23,39 B de utilidad operativa. Meta mantiene una escala difícil de replicar y continúa usando IA para mejorar recomendación y rendimiento publicitario.
 
-La tensión de la tesis es financiera. El capex pasó de US$39,23 B en 2024 a US$72,22 B en 2025 y la guía de 2026 subió a US$125 B–US$145 B. Al mismo tiempo crecieron la deuda, los compromisos de infraestructura y las garantías asociadas a empresas conjuntas. El flujo libre puede quedar presionado aun si los ingresos y la utilidad operativa siguen creciendo.
+La tensión de la tesis se hizo más visible en Q2. Los costos y gastos crecieron 55%, el margen operativo bajó de 43% a 31% y el flujo libre se redujo a US$784 M. Parte del deterioro fue puntual —cargos legales e indemnizaciones—, pero el capex también alcanzó US$31,08 B en el trimestre y la guía anual quedó en US$130 B–US$145 B. Al mismo tiempo crecieron la deuda, los compromisos de infraestructura y las garantías asociadas a empresas conjuntas.
 
 Reality Labs continúa siendo una apuesta costosa, mientras la monetización de WhatsApp, Threads, Meta AI y gafas todavía no compensa sus inversiones. El valor de largo plazo dependerá de que Meta convierta su gasto en IA y nuevos dispositivos en mayor participación de usuarios, mejor publicidad o nuevas fuentes de ingresos con retornos superiores al costo de capital.
 
-El siguiente dato financiero material será Q2 2026, programado para el 29 de julio. No se incorporan rumores, estimaciones de analistas ni resultados aún no publicados.
+El crecimiento de ingresos sigue siendo robusto, pero Q2 mostró que crecimiento contable y generación de caja pueden divergir durante esta fase de inversión. La guía de Q3 apunta a US$61 B–US$64 B de ingresos, mientras la dirección mantiene su expectativa de superar en 2026 la utilidad operativa de 2025. No se incorporan rumores ni estimaciones de analistas como resultados realizados.
 
 ## Datos rápidos
 
@@ -358,13 +384,15 @@ El siguiente dato financiero material será Q2 2026, programado para el 29 de ju
 - **Margen operativo 2025:** 41,4%
 - **Flujo de caja libre 2025:** US$43,59 B
 - **Pérdida operativa de Reality Labs 2025:** US$19,19 B
-- **Ingresos Q1 2026:** US$56,31 B
-- **Family DAP estimado en marzo de 2026:** 3.560 millones
-- **Empleados al 31/03/2026:** 77.986
-- **Caja y valores al 31/03/2026:** US$81,18 B
-- **Guía de capex 2026:** US$125 B–US$145 B
-- **Precio bursátil al cierre del 27/07/2026:** Aproximadamente US$593,87
-- **Capitalización bursátil calculada:** Aproximadamente US$1,51 T
+- **Ingresos Q2 2026:** US$60,80 B
+- **Utilidad operativa Q2 2026:** US$18,78 B
+- **Family DAP estimado en junio de 2026:** 3.600 millones
+- **Empleados al 30/06/2026:** 75.472
+- **Caja y valores al 30/06/2026:** US$90,26 B
+- **Deuda de largo plazo al 30/06/2026:** US$83,66 B
+- **Guía de capex 2026:** US$130 B–US$145 B
+- **Precio bursátil al cierre regular del 29/07/2026:** US$585,61
+- **Capitalización bursátil calculada:** Aproximadamente US$1,49 T
 - **CEO:** Mark Zuckerberg
 
 ## Sinónimos y términos relacionados
@@ -381,7 +409,8 @@ Se priorizaron documentos de Meta, SEC y organismos públicos. El precio bursát
 - [Formulario 10-Q de Meta para Q1 2026, SEC](https://www.sec.gov/Archives/edgar/data/1326801/000162828026028526/meta-20260331.htm)
 - [Resultados de Meta de Q1 2026](https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-First-Quarter-2026-Results/default.aspx)
 - [Transcripción oficial de la llamada de Q1 2026](https://s21.q4cdn.com/399680738/files/doc_financials/2026/q1/META-Q1-2026-Earnings-Call-Transcript.pdf)
-- [Anuncio oficial de publicación de Q2 2026](https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-to-Announce-Second-Quarter-2026-Results/default.aspx)
+- [Resultados oficiales de Meta de Q2 2026](https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/Meta-06-30-2026-Exhibit-99-1-FINAL.pdf)
+- [Presentación oficial de resultados de Q2 2026](https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/Earnings-Presentation-Q2-2026.pdf)
 - [Proxy de Meta de 2026, SEC](https://www.sec.gov/Archives/edgar/data/1326801/000162828026025532/meta-20260416.htm)
 - [Resultados de la asamblea de 2026, SEC](https://www.sec.gov/Archives/edgar/data/1326801/000162828026039193/meta-20260527.htm)
 - [8-K del nombramiento de Dina Powell McCormick](https://www.sec.gov/Archives/edgar/data/1326801/000162828026002429/meta-20260112.htm)
@@ -404,10 +433,10 @@ Se priorizaron documentos de Meta, SEC y organismos públicos. El precio bursát
 - [Conclusión preliminar de la Comisión Europea sobre menores de 13 años, abril de 2026](https://digital-strategy.ec.europa.eu/en/news/commission-preliminarily-finds-meta-breach-digital-services-act-failing-prevent-minors-under-13)
 - [Conclusión preliminar de la Comisión Europea bajo la DSA, julio de 2026](https://digital-strategy.ec.europa.eu/en/news/commission-preliminarily-finds-addictive-design-instagram-and-facebook-breach-digital-services-act)
 - [Actualización procesal de California sobre seguridad juvenil, junio de 2026](https://oag.ca.gov/node/625747)
-- [Precio de cierre histórico de META al 27 de julio de 2026](https://chartexchange.com/symbol/nasdaq-meta/historical/)
+- [Resultados de Q2 y reacción bursátil posterior al cierre, AP, 29 de julio de 2026](https://apnews.com/article/bcbc62dde6d2cac724e3b3385fcabeab)
 - [Precio de la oferta pública inicial de Facebook](https://investor.atmeta.com/investor-news/press-release-details/2012/Facebook-Announces-Pricing-of-Initial-Public-Offering/default.aspx)
 - [Cambio del símbolo bursátil a META](https://investor.atmeta.com/investor-news/press-release-details/2022/Meta-Platforms-Inc.-to-Change-Ticker-Symbol-to-META-on-June-9/default.aspx)
 
 
 
-> Las cifras históricas provienen de estados financieros auditados o comunicados oficiales. Los resultados de Q1 2026 son no auditados. Márgenes brutos, participaciones, tasas de crecimiento, métricas TTM, capitalización y exclusiones fiscales identificadas como cálculos se obtuvieron aritméticamente a partir de esas fuentes. La guía, los objetivos de capacidad y las transacciones pendientes no son resultados realizados.
+> Las cifras históricas provienen de estados financieros auditados o comunicados oficiales. Los resultados de Q1 y Q2 2026 son no auditados. Márgenes brutos, participaciones, tasas de crecimiento, métricas TTM, capitalización y exclusiones fiscales identificadas como cálculos se obtuvieron aritméticamente a partir de esas fuentes. La guía, los objetivos de capacidad y las transacciones pendientes no son resultados realizados.
